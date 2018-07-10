@@ -5,23 +5,6 @@ Authors Haven - A Social platform for the creative at heart.
 Create a community of like minded authors to foster inspiration and innovation
 by leveraging the modern web.
 
-## Installation
-
-1.Install [pyenv](https://github.com/yyuu/pyenv#installation).
-2.Install [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv#installation).
-3.Install Python 3.5.2: `pyenv install 3.5.2`.
-4.Create a new virtualenv called `authorshaven`: `pyenv virtualenv 3.5.2 authorshaven`.
-5.Activate your virtualenv.
-5.Clone this repository: `git clone https://github.com/andela/ah-django.git`.
-6.`cd` into `src`: `cd src`.
-7.Install requirements and Enjoy!!
-
-If all went well then your command line prompt should now start with `(src)`.
-
-If your command line prompt does not start with `(src)` at this point, try running `pyenv activate src`.
-
-If pyenv is still not working,kindly contact your Technical Team Lead.
-
 ---
 
 ## API Spec
