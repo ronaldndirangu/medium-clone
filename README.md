@@ -7,14 +7,14 @@ by leveraging the modern web.
 
 ## Installation
 
-1. Clone this repository: `git clone https://github.com/andela/ah-django.git`.
-2. `cd` into `src`: `cd src`.
-3. Install [pyenv](https://github.com/yyuu/pyenv#installation).
-4. Install [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv#installation).
-5. Install Python 3.5.2: `pyenv install 3.5.2`.
-6. Create a new virtualenv called `authorshaven`: `pyenv virtualenv 3.5.2 authorshaven`.
-7. Set the local virtualenv to `authorshaven`: `pyenv local authorshaven`.
-8. Reload the `pyenv` environment: `pyenv rehash`.
+1.Install [pyenv](https://github.com/yyuu/pyenv#installation).
+2.Install [pyenv-virtualenv](https://github.com/yyuu/pyenv-virtualenv#installation).
+3.Install Python 3.5.2: `pyenv install 3.5.2`.
+4.Create a new virtualenv called `authorshaven`: `pyenv virtualenv 3.5.2 authorshaven`.
+5.Activate your virtualenv.
+5.Clone this repository: `git clone https://github.com/andela/ah-django.git`.
+6.`cd` into `src`: `cd src`.
+7.Install requirements and Enjoy!!
 
 If all went well then your command line prompt should now start with `(src)`.
 
