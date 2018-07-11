@@ -179,6 +179,7 @@ Example request body:
 ```
 
 No authentication required, returns a User
+
 Required fields: `email`, `password`
 
 ### Registration:
