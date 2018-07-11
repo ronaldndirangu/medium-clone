@@ -391,9 +391,6 @@ No additional parameters required
 
 `GET /api/tags`
 
-`\
-`
-
 
 
 
