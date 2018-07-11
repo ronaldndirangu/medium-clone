@@ -127,7 +127,8 @@ The preferred JSON object to be returned by the API should be structured as foll
       "image": "https://i.stack.imgur.com/xHWG8.jpg",
       "following": false
     }
-  }]
+  }],
+  "commentsCount": 1
 }
 ```
 ### List of Tags
