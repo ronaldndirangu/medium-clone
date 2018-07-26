@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',
+    
 ]
 
 MIDDLEWARE = [
@@ -138,10 +139,10 @@ CORS_ORIGIN_WHITELIST = (
 AUTH_USER_MODEL = 'authentication.User'
 
 REST_FRAMEWORK = {
-    'EXCEPTION_HANDLER': 'authors.apps.core.exceptions.core_exception_handler',
-    'NON_FIELD_ERRORS_KEY': 'error',
+    # 'EXCEPTION_HANDLER': 'authors.apps.core.exceptions.core_exception_handler',
+    # 'NON_FIELD_ERRORS_KEY': 'error',
 
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'authors.apps.authentication.backends.JWTAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'authors.apps.authentication.backends.JWTAuthentication',
+    ),
 }

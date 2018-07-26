@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
     """
     Django requires that custom users define their own Manager class. By
     inheriting from `BaseUserManager`, we get a lot of the same code used by
-    Django to create a `User` for free. 
+    Django to create a `User`. 
 
     All we have to do is override the `create_user` function which we will use
     to create `User` objects.
@@ -32,6 +32,7 @@ class UserManager(BaseUserManager):
 
         return user
 
+ 
     def create_superuser(self, username, email, password):
       """
       Create and return a `User` with superuser powers.
@@ -101,20 +102,33 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.email
 
     @property
+    def token(self):
+        """
+        Allows us to get a user's token by calling `user.token` instead of
+        `user.generate_jwt_token().
+
+        The `@property` decorator above makes this possible. `token` is called
+        a "dynamic property".
+        """
+        return self._generate_jwt_token() 
     def get_full_name(self):
       """
-      This method is required by Django for things like handling emails.
-      Typically, this would be the user's first and last name. Since we do
-      not store the user's real name, we return their username instead.
+      Returns a user's  username
       """
       return self.username
 
     def get_short_name(self):
         """
-        This method is required by Django for things like handling emails.
-        Typically, this would be the user's first name. Since we do not store
-        the user's real name, we return their username instead.
+        Returns a user's username
         """
         return self.username
 
+    def _generate_jwt_token(self):
+        dt = datetime.now() + timedelta(days=30)
+        token = jwt.encode({
+            'id': self.pk,
+            'exp': int(dt.strftime('%s'))
+        }, settings.SECRET_KEY, algorithm='HS256')
 
+        return token.decode('utf-8')
+        
