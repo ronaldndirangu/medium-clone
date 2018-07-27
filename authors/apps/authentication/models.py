@@ -12,7 +12,7 @@ class UserManager(BaseUserManager):
     """
     Django requires that custom users define their own Manager class. By
     inheriting from `BaseUserManager`, we get a lot of the same code used by
-    Django to create a `User`. 
+    Django to create a `User`.
 
     All we have to do is override the `create_user` function which we will use
     to create `User` objects.
@@ -32,7 +32,7 @@ class UserManager(BaseUserManager):
 
         return user
 
- 
+
     def create_superuser(self, username, email, password):
       """
       Create and return a `User` with superuser powers.
@@ -62,6 +62,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     # the user anyways, we will also use the email for logging in because it is
     # the most common form of login credential at the time of writing.
     email = models.EmailField(db_index=True, unique=True)
+
+    # checking if a new user has verified their account from the verification email
+    is_verified = models.BooleanField(default=False)
 
     # When a user no longer wishes to use our platform, they may try to delete
     # there account. That's a problem for us because the data we collect is
@@ -110,7 +113,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         The `@property` decorator above makes this possible. `token` is called
         a "dynamic property".
         """
-        return self._generate_jwt_token() 
+        return self._generate_jwt_token()
     def get_full_name(self):
       """
       Returns a user's  username
@@ -131,4 +134,4 @@ class User(AbstractBaseUser, PermissionsMixin):
         }, settings.SECRET_KEY, algorithm='HS256')
 
         return token.decode('utf-8')
-        
+

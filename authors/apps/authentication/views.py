@@ -3,8 +3,11 @@ from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-
+from .models import User
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.http.response import HttpResponse
+from .verification import SendEmail, account_activation_token
 from .renderers import UserJSONRenderer
 from .serializers import (
     LoginSerializer, RegistrationSerializer, UserSerializer
@@ -27,7 +30,32 @@ class RegistrationAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
+        # calls function that sends verification email once user is registered
+        SendEmail().send_verification_email(user.get('email'), request)
+
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class Activate(APIView):
+    # Gets uidb64 and token from the send_verification_email function and
+    # if valid, changes the status of user in is_verified to True and is_active
+    # to True. The user is then redirected to a html page once the verification
+    # link is clicked
+
+    permission_classes = (AllowAny, )
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_active = True
+            user.is_verified = True
+            user.save()
+            return HttpResponse('Thank you for your email confirmation. Now you can login your account')
+        else:
+            return HttpResponse('Activation link is invalid!')
 
 
 class LoginAPIView(APIView):
@@ -73,4 +101,3 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_200_OK)
-
