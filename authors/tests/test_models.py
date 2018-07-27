@@ -1,8 +1,6 @@
 from django.test import TestCase
-from rest_framework.test import APIClient
-from rest_framework import status
 
-#my local imports
+# my local imports
 from ..apps.authentication.models import User
 
 
@@ -41,8 +39,8 @@ class ModelTestCase(TestCase):
 
     def test_timestamp_added(self):
         """
-        Test that user model adds a timestamp 
-        on user creation. 
+        Test that user model adds a timestamp
+        on user creation.
         """
 
         response = create_a_user()
@@ -50,7 +48,7 @@ class ModelTestCase(TestCase):
 
     def test_get_short_name(self):
         """
-        Test that user model can return users short name. 
+        Test that user model can return users short name.
         """
 
         response = create_a_user()
@@ -58,8 +56,8 @@ class ModelTestCase(TestCase):
 
     def test_get_full_name(self):
         """
-        Test that user model can return users full name. 
+        Test that user model can return users full name.
         """
 
         response = create_a_user()
-        self.assertEqual(response.username, response.get_full_name)
+        self.assertEqual(response.username, response.get_full_name())

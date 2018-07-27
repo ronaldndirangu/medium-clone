@@ -4,26 +4,27 @@ from rest_framework import status
 
 from ..apps.authentication.models import User
 
+
 class ViewTestCase(TestCase):
     """Test suite for the api views."""
 
     def setUp(self):
         """Define the test client and other test variables."""
-        
+
         self.user_data = {
-            "user":{
+            "user": {
                 "username": "nerd",
                 "email": "nerd@nerd.com",
-                "password": "secret123456"
-                }
+                "password": "Secret123456"
             }
+        }
 
         self.login_data = {
-            "user":{
+            "user": {
                 "email": "nerd@nerd.com",
-                "password": "secret123456"
-                }
+                "password": "Secret123456"
             }
+        }
 
         # Initialize client
         self.client = APIClient()
@@ -55,7 +56,7 @@ class ViewTestCase(TestCase):
 
     def test_api_create_a_user_without_username(self):
         """
-        Test the api cannot create a user without 
+        Test the api cannot create a user without
         a password field.
         """
 
@@ -74,7 +75,7 @@ class ViewTestCase(TestCase):
 
     def test_api_create_a_user_without_email(self):
         """
-        Test the api cannot create a user without 
+        Test the api cannot create a user without
         an email field.
         """
 
@@ -100,7 +101,7 @@ class ViewTestCase(TestCase):
             format='json'
         )
         response = self.client.post(
-            '/api/users/login',
+            '/api/users/login/',
             self.login_data,
             format='json'
         )
@@ -110,18 +111,18 @@ class ViewTestCase(TestCase):
         """Test the api cannot login a user with a wrong password."""
 
         login_data = {
-            "user":{
-                "email":"nerd@nerd.com",
-                "password":"wrong123456"
+            "user": {
+                "email": "nerd@nerd.com",
+                "password": "wrong123456"
             }
-            }
+        }
         self.client.post(
             '/api/users/',
             self.user_data,
             format='json'
-        )   
+        )
         response = self.client.post(
-            '/api/users/login',
+            '/api/users/login/',
             login_data,
             format='json'
         )
@@ -131,11 +132,11 @@ class ViewTestCase(TestCase):
         """Test the api cannot login a user with a wrong email."""
 
         login_data = {
-            "user":{
-                "email":"wrong@nerd.com",
-                "password":"secret123456"
+            "user": {
+                "email": "wrong@nerd.com",
+                "password": "secret123456"
             }
-            }
+        }
 
         self.client.post(
             '/api/users/',
@@ -143,7 +144,7 @@ class ViewTestCase(TestCase):
             format='json'
         )
         response = self.client.post(
-            '/api/users/login',
+            '/api/users/login/',
             login_data,
             format='json'
         )
@@ -168,7 +169,7 @@ class ViewTestCase(TestCase):
             format='json'
         )
         response = self.client.post(
-            '/api/users/login',
+            '/api/users/login/',
             login_data,
             format='json'
         )
