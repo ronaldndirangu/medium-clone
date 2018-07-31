@@ -90,14 +90,29 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):
-        serializer_data = request.data.get('user', {})
+        if request.user.is_verified:
+            user_data = request.data.get('user', {})
 
-        # Here is that serialize, validate, save pattern we talked about
-        # before.
-        serializer = self.serializer_class(
-            request.user, data=serializer_data, partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+            serializer_data = {
+                'username': user_data.get('username', request.user.username),
+                'email': user_data.get('email', request.user.email),
+                
+                'profile': {
+                    'bio': user_data.get('bio', request.user.profile.bio),
+                    'interests': user_data.get('interests', 
+                        request.user.profile.interests),
+                    'image': user_data.get('image', request.user.profile.image)
+                }
+            }
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            # Here is that serialize, validate, save pattern we talked about
+            # before.
+            serializer = self.serializer_class(
+                request.user, data=serializer_data, partial=True
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        message = {"Error": "Email for this user is not verified"}
+        return Response(message, status=status.HTTP_403_FORBIDDEN)
