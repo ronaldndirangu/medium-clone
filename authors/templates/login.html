@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel='shortcut icon' type='image/x-icon' href='static/images/favicon.ico' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="card-panel clear">
+            <div>
+            <h4 class="blue-text">Login</h4>
+            </div>
+            <div class="row">
+                <form class="col s12">
+                    <div row>
+                        <div class="input-field col s12">
+                            <input type="text" name="username" id="username" class="validate" required="required">
+                            <label for="username">Email:</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input type="password" name="password" id="password" class="validate" required="required">
+                            <label for="password">Password:</label>
+                        </div>
+                        <div class="col s6">
+                            <p>
+                                <label>
+                                    <input type="checkbox" id="remember" />
+                                    <span>Remember me</span>
+                                </label>
+                            </p>
+                        </div>
+                        <div class="col s6">
+                            <p>Not a member?
+                                <a href="signup.html">Sign up</a>
+                            </p>
+                        </div>
+                        <div class="col s12">
+                            <button class="btn waves-effect light-waves" type="submit" name="login">Login</button>
+                        </div>
+                        <br>
+                        <span class="col s12">or</span>
+                        <br>
+                    <div class="col s6">
+                        <button class="btn waves-effect light-waves red lighten-1" type="submit" name="login">Login with Google Account</button>
+                    </div>
+                    <div class="col s6">
+                        <button class="btn waves-effect light-waves blue" type="submit" name="login">Login with Facebook</button>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+</body>
+
+</html>
