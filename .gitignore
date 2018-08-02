@@ -96,4 +96,4 @@ db.sqlite3
 # VSCode settings
 .vscode
 
-.DS_store
+.DS_Store

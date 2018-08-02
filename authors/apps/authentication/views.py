@@ -31,7 +31,7 @@ class RegistrationAPIView(APIView):
         serializer.save()
 
         # calls function that sends verification email once user is registered
-        SendEmail().send_verification_email(user.get('email'), request)
+        SendEmail().send_verification_email(user.get('email', None), request)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

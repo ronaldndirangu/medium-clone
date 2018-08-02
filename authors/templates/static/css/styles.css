@@ -53,3 +53,8 @@ main {
 .input-field .prefix.active {
     color: #000;
 }
+
+/* text area height */
+textarea.materialize-textarea{
+    height: 10rem;
+}

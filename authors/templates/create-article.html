@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel='shortcut icon' type='image/x-icon' href='static/images/favicon.ico' />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body >
+    <header>
+        <nav>
+            <div class="nav-wrapper blue accent-4">
+                <div class="container">
+                    <a href="#" class="brand-logo">
+                        <div class="logoimage">
+                            <img class="logoimage" src="static/images/logo.png" alt="App logo">
+                        </div>
+                    </a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down">
+                        <li>
+                            <a href="#">Johnah Karim </a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="material-icons">exit_to_app</i></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+        <main class="container">
+            <div class="card-panel z-depth-2 lighten-4">
+            <div>
+                <h4 class="blue-text">Create Article</h4>
+                <hr class="grey lighten-10">
+            </div>
+            <br>
+            <div class="row">
+                <form class="col s12">
+                    <div row>
+                        <div class="input-field col s12">
+                            <input type="text" name="title" id="title" class="validate" required="required">
+                            <label for="title">Title:</label>
+                        </div>
+                        <div class="input-field col s12">
+                            <input type="text" name="description" id="description" class="validate" required="required">
+                            <label for="description">Description:</label>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="input-field col s12">
+                          <textarea id="body" class="materialize-textarea"></textarea>
+                          <label for="body">Body:</label>
+                        </div>
+                        <div class="col s2">
+                            <button class="btn waves-effect light-waves blue" type="submit" name="signup">Save</button>
+                        </div>
+                        <div class="col s2">
+                            <button class="btn waves-effect light-waves red" type="submit" name="cancel">Reset</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        </main>
+        <footer class="page-footer blue accent-4">
+        <div class="footer-copyright">
+            <div class="container">
+                © 2018 Created with Love by team titans.
+            </div>
+        </div>
+    </footer>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min.js">
+    </script>
+</body>
+
+</html>

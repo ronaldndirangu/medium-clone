@@ -14,10 +14,12 @@ def create_a_user(username="nerd", email="nerd@nerd.com", password="Secret123456
     user.save()
     return user
 
+
 def update_user_profile(username=None, email=None,
         bio=None, interests=None, image=None):
 
     """Updating user profile"""
+
 
 class ProfileTestcase(TestCase):
     """Test suite for the user profile."""
