@@ -18,7 +18,7 @@ class ArticleSerializer(serializers.ModelSerializer):
     updated_at = serializers.DateTimeField(read_only=True)
     author = ProfileSerializer(read_only=True)
     rating = serializers.IntegerField(required=False)
-    raters = serializers.IntegerField(initial=0, allow_null=True)
+    raters = serializers.IntegerField(required=False)
 
     class Meta:
         model = Article
@@ -87,22 +87,16 @@ class RatingSerializer(serializers.ModelSerializer):
         # provided by the user during creating or updating an article
         rate = data.get('rating')
 
+        # validate the rate is not a string but an integer or an empty value
+        if isinstance(rate, str) or rate is None:
+            raise serializers.ValidationError(
+                """A valid integer is required."""
+            )
+
         # validate the rate is within range
         if rate > 5 or rate < 1:
             raise serializers.ValidationError(
                 """Rate must be a value between 1 and 5"""
-            )
-
-        # validate the rate is not a string but an integer
-        if isinstance(rate, str):
-            raise serializers.ValidationError(
-                """A valid integer is required."""
-            )
-
-        # validate user soes not post an empy value
-        if rate is " ":
-            raise serializers.ValidationError(
-                """A valid integer is required."""
             )
 
         return {"rating": rate}
