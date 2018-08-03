@@ -21,3 +21,15 @@ class ArticleJSONRenderer(JSONRenderer):
         return json.dumps({
             'article': 'No article found.'
         })
+
+
+class RatingJSONRenderer(JSONRenderer):
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        """
+        Render the ratings in a structured manner for the end user.
+        """
+        return json.dumps({
+            'rate': data
+        })

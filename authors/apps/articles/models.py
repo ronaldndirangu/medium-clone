@@ -18,6 +18,9 @@ class Article(TimestampModel):
     description = models.TextField()
     image_url = models.URLField(blank=True, null=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    rating = models.IntegerField(null=True)
+    total_rating = models.IntegerField(null=True)
+    raters = models.IntegerField(null=True)
 
     def __str__(self):
         return self.title
@@ -28,6 +31,8 @@ def pre_save_article_receiver(sender, instance, *args, **kwargs):
     Method uses a signal to add slug to an article before saving it
     A slug will always be unique
     """
+    if instance.slug:
+        return
     slug = slugify(instance.title)
     num = 1
     unique_slug = slug

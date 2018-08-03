@@ -1,10 +1,11 @@
 from .models import Article
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import NotFound, PermissionDenied
-from .serializers import ArticleSerializer
-from .renderers import ArticleJSONRenderer
+from .serializers import ArticleSerializer, RatingSerializer
+from .renderers import ArticleJSONRenderer, RatingJSONRenderer
 from rest_framework.response import Response
 from rest_framework import mixins, status, viewsets
+from rest_framework.views import APIView
 
 
 class ArticleViewSet(mixins.CreateModelMixin,
@@ -104,3 +105,25 @@ class ArticleViewSet(mixins.CreateModelMixin,
                 "You are not authorized to delete this article.")
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+
+class RateAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    renderer_classes = (RatingJSONRenderer,)
+    serializer_class = RatingSerializer
+
+    def post(self, request, slug):
+        """
+        Method that posts users article ratings
+        """
+        try:
+            article = Article.objects.get(slug=slug)
+        except Article.DoesNotExist:
+            raise NotFound("An article with this slug does not exist")
+
+        rate = request.data.get('rate', {})
+        serializer = self.serializer_class(article, data=rate, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
