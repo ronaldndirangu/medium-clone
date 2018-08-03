@@ -20,3 +20,8 @@ script:
 
 after_success:
     - coveralls
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "33fea817-3dbd-445a-9de9-1cf1a9363995"

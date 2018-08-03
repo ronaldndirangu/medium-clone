@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'ah-titans-api.herokuapp.com']
 
 # Application definition
 
@@ -152,3 +152,12 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
+
+import dj_database_url
+
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
