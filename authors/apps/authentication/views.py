@@ -1,17 +1,27 @@
+import jwt
+from datetime import datetime, timedelta
+from requests.exceptions import HTTPError
+
 from rest_framework import status
-from rest_framework.generics import RetrieveUpdateAPIView
+from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User
+from rest_framework.decorators import api_view, permission_classes
+
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.http.response import HttpResponse
-from .verification import SendEmail, account_activation_token
+from django.conf import settings
+
+from social_django.utils import load_backend, load_strategy
+from social_core.exceptions import MissingBackend
 from .renderers import UserJSONRenderer
+from .verification import SendEmail, account_activation_token
 from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer
+    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer
 )
+from .models import User
 
 
 class RegistrationAPIView(APIView):
@@ -116,3 +126,63 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         message = {"Error": "Email for this user is not verified"}
         return Response(message, status=status.HTTP_403_FORBIDDEN)
+
+
+
+class ExchangeToken(CreateAPIView):
+    permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = SocialSerializer
+
+    def create(self, request, backend):
+        serializer = SocialSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        strategy = load_strategy(request)
+
+        try:
+            backend = load_backend(strategy=strategy, name=backend, redirect_uri=None)
+        except MissingBackend  as e:
+            return Response(
+                {'errors': {
+                    'token': 'Invalid token',
+                    'detail': str(e),
+                }},
+                status=status.HTTP_404_NOT_FOUND)
+        try:
+            token = serializer.data.get("access_token")
+            user = backend.do_auth(token)
+        except HTTPError as e:
+            return Response(
+                {'errors': {
+                    'token': 'Invalid token',
+                    'detail': str(e),
+                }},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if user:
+            if user.is_active:
+                dt = datetime.now() + timedelta(days=30)
+                token = jwt.encode({
+                    'id': user.pk,
+                    'exp': int(dt.strftime('%s'))
+                    }, settings.SECRET_KEY, algorithm='HS256')
+
+
+                token = token.decode('utf-8')
+                return Response({'token': token})
+            else:
+              
+                return Response(
+                    {'errors': {"user": 'This user account is inactive'}},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        else:
+            return Response(
+                {'errors': {"user": "Authentication Failed"}},
+                status=status.HTTP_400_BAD_REQUEST,
+
+            )
+
+
+
