@@ -1,8 +1,7 @@
+import re
 from rest_framework import serializers
 from .models import Article, Ratings
 from authors.apps.profiles.serializers import ProfileSerializer
-
-import re
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -17,13 +16,19 @@ class ArticleSerializer(serializers.ModelSerializer):
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(read_only=True)
     author = ProfileSerializer(read_only=True)
+    likes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    dislikes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    likes_count = serializers.SerializerMethodField()
+    dislikes_count = serializers.SerializerMethodField()
     average_rating = serializers.FloatField(required=False, read_only=True)
 
 
     class Meta:
         model = Article
         fields = ['title', 'slug', 'body',
-                  'description', 'image_url', 'created_at', 'updated_at', 'author', 'average_rating']
+                  'description', 'image_url', 'created_at', 'updated_at',
+                  'author', 'average_rating', 'likes', 'dislikes',
+                  'likes_count', 'dislikes_count']
 
     def create(self, validated_data):
         return Article.objects.create(**validated_data)
@@ -47,6 +52,12 @@ class ArticleSerializer(serializers.ModelSerializer):
                 """
             )
         return data
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
+    def get_dislikes_count(self, obj):
+        return obj.dislikes.count()
 
 
 class RatingSerializer(serializers.Serializer):

@@ -1,14 +1,13 @@
-from django.test import TestCase
-from django.urls import reverse
-
-from rest_framework import status
-from rest_framework.test import APIClient
-from rest_framework.test import APIRequestFactory
-from rest_framework.test import force_authenticate
 import json
+
 from authors.apps.authentication.models import User
 from authors.apps.authentication.verification import SendEmail
 from authors.apps.authentication.views import Activate
+from django.test import TestCase
+from django.urls import reverse
+from rest_framework import status
+from rest_framework.test import (APIClient, APIRequestFactory,
+                                 force_authenticate)
 
 
 class ViewTestCase(TestCase):
@@ -18,12 +17,12 @@ class ViewTestCase(TestCase):
         """Define the test client and other test variables."""
 
         self.testUser1 = {
-              "user": {
-                    "username": "Jacob",
-                    "email": "jake@jake.jake",
-                    "password": "Pass123$"
-                }
+            "user": {
+                "username": "Jacob",
+                "email": "jake@jake.jake",
+                "password": "Pass123$"
             }
+        }
 
         self.testUser2 = {
             "user": {
