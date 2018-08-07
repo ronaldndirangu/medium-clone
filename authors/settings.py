@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'ah-titans-api.herokuapp.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'herokuapp.com']
 
 # Application definition
 
