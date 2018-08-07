@@ -125,15 +125,24 @@ class ViewTestCase(TestCase):
         """
         Creates an article for testing
         """
-
-        token = self.login_verified_user(self.test_user)
-
         return self.client.post(
             '/api/articles/',
             self.article,
             HTTP_AUTHORIZATION='Token ' + token,
             format='json'
         )
+
+    def rating(self, token):
+        """
+        Method for rating an aricle
+        """
+
+        return self.client.post(
+        '/api/articles/lolitas/rate/',
+        self.rate,
+        HTTP_AUTHORIZATION='Token ' + token,
+        format='json'
+    )
 
     def test_rating_inexisting_article(self):
         """Test user rating an inexisting article"""
@@ -215,3 +224,22 @@ class ViewTestCase(TestCase):
         )
 
         self.assertEquals(response.status_code, status.HTTP_201_CREATED)
+
+    def test_rating_more_than_five_times(self):
+        """Test that a user cannot rate an article for more than 5 times"""
+
+        token = self.login_verified_user(self.test_user2)
+        self.create_article(token, self.article)
+
+        self.rating(token)
+        self.rating(token)
+        self.rating(token)
+        self.rating(token)
+        self.rating(token)
+        self.rating(token)
+        response = self.rating(token)
+
+        self.assertIn("You are not allowed to rate this article more than 5 times.",
+                      response.content.decode())
+        self.assertEquals(response.status_code, status.HTTP_403_FORBIDDEN)
+    

@@ -183,6 +183,3 @@ class ExchangeToken(CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
 
             )
-
-
-

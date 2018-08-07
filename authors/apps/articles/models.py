@@ -18,12 +18,21 @@ class Article(TimestampModel):
     description = models.TextField()
     image_url = models.URLField(blank=True, null=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
-    rating = models.IntegerField(null=True)
-    total_rating = models.IntegerField(null=True)
-    raters = models.IntegerField(null=True)
 
     def __str__(self):
         return self.title
+
+
+class Ratings(models.Model):
+    """
+    Defines the ratings fields for a rater
+    """
+    rater = models.ForeignKey(
+        Profile, on_delete=models.CASCADE)
+    article = models.ForeignKey(
+        Article,  on_delete=models.CASCADE, related_name="rating")
+    counter = models.IntegerField(default=0)
+    stars = models.IntegerField(null=False)
 
 
 def pre_save_article_receiver(sender, instance, *args, **kwargs):
