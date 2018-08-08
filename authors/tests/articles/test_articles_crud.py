@@ -324,7 +324,7 @@ class ViewTestCase(TestCase):
 
         response = self.client.get('/api/articles/')
         json_response = json.loads(response.content)
-        self.assertEqual(len(json_response.get('articles')), 2)
+        self.assertEqual(len(json_response.get('articles')), 4)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_any_user_can_get_article_by_slug(self):

@@ -1,86 +1,90 @@
 body {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
 }
 
 main {
-  flex: 1 0 auto;
+	flex: 1 0 auto;
 }
 .clear {
-  margin-top: 10%;
+	margin-top: 10%;
 }
 .logoimage {
-  height: 85px;
-  width: 85ps;
-  padding-bottom: 20px;
+	height: 85px;
+	width: 85ps;
+	padding-bottom: 20px;
 }
 /* label color */
 
 .input-field label {
-  color: #000;
+	color: #000;
 }
 
 /* label focus color */
 
 .input-field input[type="text"]:focus + label {
-  color: #000;
+	color: #000;
 }
 
 /* label underline focus color */
 
 .input-field input[type="text"]:focus {
-  border-bottom: 1px solid #000;
-  box-shadow: 0 1px 0 0 #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 0 1px 0 0 #000;
 }
 
 /* valid color */
 
 .input-field input[type="text"].valid {
-  border-bottom: 1px solid #000;
-  box-shadow: 0 1px 0 0 #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 0 1px 0 0 #000;
 }
 
 /* invalid color */
 
 .input-field input[type="text"].invalid {
-  border-bottom: 1px solid #000;
-  box-shadow: 0 1px 0 0 #000;
+	border-bottom: 1px solid #000;
+	box-shadow: 0 1px 0 0 #000;
 }
 
 /* icon prefix focus color */
 
 .input-field .prefix.active {
-  color: #000;
+	color: #000;
 }
 
 /* text area height */
 textarea.materialize-textarea {
-  height: 10rem;
+	height: 10rem;
 }
 .article-header {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  flex-wrap: wrap;
+	display: flex;
+	align-content: center;
+	align-items: center;
+	flex-wrap: wrap;
 }
 
 .article-header h4 {
-  margin-right: 20px;
+	margin-right: 20px;
 }
 
 .ratings {
-  display: flex;
-  margin: 1.52rem 0 0.912rem 0;
-  bottom: 0;
+	display: flex;
+	margin: 1.52rem 0 0.912rem 0;
+	bottom: 0;
 }
 
 .stat {
-  padding-left: 10px;
-  font-weight: bold;
-  font-size: 17px;
-  color: orange;
+	padding-left: 10px;
+	font-weight: bold;
+	font-size: 17px;
+	color: orange;
 }
 i.icon-orange {
-  color: orange;
+	color: orange;
+}
+
+.pagination li.active {
+	background-color: dodgerblue;
 }

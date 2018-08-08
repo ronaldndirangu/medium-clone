@@ -2,6 +2,8 @@ Authors Haven - A Social platform for the creative at heart.
 =======
 [![Build Status](https://travis-ci.org/andela/ah-titans.svg?branch=develop)](https://travis-ci.org/andela/ah-titans) [![Coverage Status](https://coveralls.io/repos/github/andela/ah-titans/badge.svg?branch=develop)](https://coveralls.io/github/andela/ah-titans?branch=develop)
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/3e1386b162d939b30874)
+
 ## Vision
 Create a community of like minded authors to foster inspiration and innovation
 by leveraging the modern web.
