@@ -2,6 +2,18 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
+from rest_framework.serializers import Serializer
+from rest_framework.validators import UniqueValidator
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
+
+from rest_framework.validators import UniqueValidator
+
+
+from rest_framework.serializers import Serializer
+from rest_framework.validators import UniqueValidator
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 from .models import User
 from .backends import JWTAuthentication
 from authors.apps.profiles.serializers import ProfileSerializer
@@ -114,6 +126,86 @@ class LoginSerializer(serializers.Serializer):
         }
 
 
+class ResetPassSerializer(serializers.Serializer):
+    """Handles serialization of password reset"""
+    email = serializers.EmailField()
+
+    def validate(self, data):
+        # The `validate` method is where we make sure that the current
+        # instance of `LoginSerializer` has "valid". In the case of logging a
+        # user in, this means validating that they've provided an email
+        # and password and that this combination matches one of the users in
+        # our database.
+        email = data.get('email', None)
+
+        if not User.objects.filter(email=email).exists():
+            return {'email': 'False'}
+        return {'email': 'True'}
+
+
+class PassResetSerializer(serializers.Serializer):
+    """Allow users to change password"""
+    new_password = serializers.CharField(max_length=128)
+    reset_token = serializers.CharField(max_length=255)
+
+    def validate(self, data):
+        # The `validate` method is used to validate the email and password
+        # provided by the user during registration
+        password = data.get('new_password', None)
+
+        # Validate password has at least one small and capital letter
+        if not re.match(r"^(?=.*[A-Z])(?=.*[a-z]).*", password):
+            raise serializers.ValidationError(
+                'A password must contain atleast one small letter and one capital letter.'
+            )
+        # Validate the password has atleast one number
+        elif not re.match(r"^(?=.*[0-9]).*", password):
+            raise serializers.ValidationError(
+                'A password must contain atleast one number.'
+            )
+        return data
+
+
+class ResetPassSerializer(serializers.Serializer):
+    """Handles serialization of password reset"""
+    email = serializers.EmailField()
+
+    def validate(self, data):
+        # The `validate` method is where we make sure that the current
+        # instance of `LoginSerializer` has "valid". In the case of logging a
+        # user in, this means validating that they've provided an email
+        # and password and that this combination matches one of the users in
+        # our database.
+        email = data.get('email', None)
+
+        if not User.objects.filter(email=email).exists():
+            return {'email': 'False'}
+        return {'email': 'True'}
+
+
+class PassResetSerializer(serializers.Serializer):
+    """Allow users to change password"""
+    new_password = serializers.CharField(max_length=128)
+    reset_token = serializers.CharField(max_length=255)
+
+    def validate(self, data):
+        # The `validate` method is used to validate the email and password
+        # provided by the user during registration
+        password = data.get('new_password', None)
+
+        # Validate password has at least one small and capital letter
+        if not re.match(r"^(?=.*[A-Z])(?=.*[a-z]).*", password):
+            raise serializers.ValidationError(
+                'A password must contain atleast one small letter and one capital letter.'
+            )
+        # Validate the password has atleast one number
+        elif not re.match(r"^(?=.*[0-9]).*", password):
+            raise serializers.ValidationError(
+                'A password must contain atleast one number.'
+            )
+        return data
+
+
 class UserSerializer(serializers.ModelSerializer):
     """Handles serialization and deserialization of User objects."""
 
@@ -130,13 +222,14 @@ class UserSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(write_only=True)
 
     bio = serializers.CharField(source='profile.bio', read_only=True)
-    interests = serializers.CharField(source='profile.interests', read_only=True)
+    interests = serializers.CharField(
+        source='profile.interests', read_only=True)
     image = serializers.CharField(source='profile.image', read_only=True)
 
     class Meta:
         model = User
         fields = ('email', 'username', 'password', 'profile',
-            'bio', 'interests',  'image')
+                  'bio', 'interests',  'image')
 
         # The `read_only_fields` option is an alternative for explicitly
         # specifying the field with `read_only=True` like we did for password

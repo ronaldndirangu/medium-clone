@@ -17,17 +17,17 @@ class VerifyTestCase(TestCase):
         """Define the test client and other test variables."""
 
         self.first_user = {
-             "user":{
+            "user": {
                 "username": "janey",
                 "email": "janet.wairimu@andela.com",
                 "password": "Secretsecret254"
-                }
             }
+        }
         self.second_user = {
-            "user":{
-            "username": "jojo",
-            "email": "jojo@.com",
-            "password": "jojojojo254"
+            "user": {
+                "username": "jojo",
+                "email": "jojo@.com",
+                "password": "jojojojo254"
             }
         }
 
@@ -50,15 +50,17 @@ class VerifyTestCase(TestCase):
     def test_account_is_verified(self):
         """Test if registered user has verified their account from link sent in tge email"""
 
-        obj = User.objects.create_user(username="janet", email="janet.wairimu@andela.com", password="janet2565637")
+        obj = User.objects.create_user(
+            username="janet", email="janet.wairimu@andela.com", password="janet2565637")
         request = self.factory.get(reverse("authentication:register"))
         token, uid = SendEmail().send_verification_email(obj.email, request)
-        request = self.factory.get(reverse("authentication:activate", args=[uid, token]))
+        request = self.factory.get(
+            reverse("authentication:activate", args=[uid, token]))
         force_authenticate(request, obj, token=obj.token)
         view = Activate.as_view()
         response = view(request, uidb64=uid, token=token)
         self.assertTrue(response.status_code, 200)
         user = User.objects.get()
         self.assertTrue(user.is_verified)
-        self.assertTrue("Thank you for your email confirmation. Now you can login your account.")
-
+        self.assertTrue(
+            "Thank you for your email confirmation. Now you can login your account.")

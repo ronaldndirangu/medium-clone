@@ -7,8 +7,8 @@ from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes
-
+from rest_framework.decorators import api_view, permission_classes, list_route
+from .models import User
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.http.response import HttpResponse
@@ -19,9 +19,8 @@ from social_core.exceptions import MissingBackend
 from .renderers import UserJSONRenderer
 from .verification import SendEmail, account_activation_token
 from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer
+    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer, ResetPassSerializer, PassResetSerializer
 )
-from .models import User
 
 
 class RegistrationAPIView(APIView):
@@ -53,6 +52,7 @@ class Activate(APIView):
     # link is clicked
 
     permission_classes = (AllowAny, )
+
     def get(self, request, uidb64, token):
         try:
             uid = force_text(urlsafe_base64_decode(uidb64))
@@ -66,6 +66,31 @@ class Activate(APIView):
             return HttpResponse('Thank you for your email confirmation. Now you can login your account')
         else:
             return HttpResponse('Activation link is invalid!')
+
+
+class Reset(APIView):
+    # Gets uidb64 and token from the send_verification_email function and
+    # if valid, changes the status of user in is_verified to True and is_active
+    # to True. The user is then redirected to a html page once the verification
+    # link is clicked
+
+    permission_classes = (AllowAny, )
+
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            user.is_reset = True
+            user.save()
+
+            encode_mail = urlsafe_base64_encode(
+                force_bytes(user.email)).decode('utf-8')
+            return Response({"token": encode_mail})
+        else:
+            return Response({"msg": "Error"})
 
 
 class LoginAPIView(APIView):
@@ -84,6 +109,75 @@ class LoginAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ResetPassAPIView(APIView):
+    """
+        This view class facilitates sending of reset password email
+    """
+    permission_classes = (AllowAny,)
+    renderer_classes = (UserJSONRenderer,)
+    serializer_class = ResetPassSerializer
+
+    def post(self, request):
+        # get user input
+        user = request.data.get('user', {})
+
+        # Notice here that we do not call `serializer.save()` like we did for
+        # the registration endpoint. This is because we don't actually have
+        # anything to save. Instead, the `validate` method on our serializer
+        # handles everything we need.
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+
+        # If user exists
+        if not serializer.data["email"] == "False":
+            # Send email
+            SendEmail().send_reset_pass_email(user.get('email'), request)
+            return Response({"msg": "Success, reset email sent."},
+                            status=status.HTTP_200_OK)
+        return Response({"msg": "Email doesn't exist, register instead."},
+                        status=status.HTTP_404_NOT_FOUND)
+
+
+class PassResetAPIView(APIView):
+    """
+        View class that allows user to set a new password upon receiving the reset 
+        password token
+    """
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (AllowAny,)
+
+    @list_route(methods=['put'], serializer_class=PassResetSerializer)
+    def put(self, request):
+        # get user input
+        user = request.data.get('user', {})
+        serializer = PassResetSerializer(data=user)
+        # Check if serializer is valid
+        if serializer.is_valid():
+            decode_email = force_text(
+                urlsafe_base64_decode(serializer.data['reset_token']))
+            instance = User.objects.get(email=decode_email)
+
+            # If `is_reset` is false, this means that the link has already
+            # been used
+            if instance.is_reset is False:
+                return Response({
+                    "msg": "Sorry, this link has already been used."
+                }, status=status.HTTP_403_FORBIDDEN)
+
+            # Set new password
+            instance.set_password(serializer.data['new_password'])
+            instance.is_reset = False
+            instance.save()
+            return Response({
+                "msg": "Success! Password for '{}' has been changed.".format(
+                    decode_email)
+            }, status=status.HTTP_201_CREATED)
+        # Invalid serializer
+        return Response(serializer.errors,
+                        status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
@@ -106,11 +200,11 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
             serializer_data = {
                 'username': user_data.get('username', request.user.username),
                 'email': user_data.get('email', request.user.email),
-                
+
                 'profile': {
                     'bio': user_data.get('bio', request.user.profile.bio),
-                    'interests': user_data.get('interests', 
-                        request.user.profile.interests),
+                    'interests': user_data.get('interests',
+                                               request.user.profile.interests),
                     'image': user_data.get('image', request.user.profile.image)
                 }
             }
@@ -128,7 +222,6 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
         return Response(message, status=status.HTTP_403_FORBIDDEN)
 
 
-
 class ExchangeToken(CreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
@@ -141,8 +234,9 @@ class ExchangeToken(CreateAPIView):
         strategy = load_strategy(request)
 
         try:
-            backend = load_backend(strategy=strategy, name=backend, redirect_uri=None)
-        except MissingBackend  as e:
+            backend = load_backend(
+                strategy=strategy, name=backend, redirect_uri=None)
+        except MissingBackend as e:
             return Response(
                 {'errors': {
                     'token': 'Invalid token',
@@ -166,13 +260,12 @@ class ExchangeToken(CreateAPIView):
                 token = jwt.encode({
                     'id': user.pk,
                     'exp': int(dt.strftime('%s'))
-                    }, settings.SECRET_KEY, algorithm='HS256')
-
+                }, settings.SECRET_KEY, algorithm='HS256')
 
                 token = token.decode('utf-8')
                 return Response({'token': token})
             else:
-              
+
                 return Response(
                     {'errors': {"user": 'This user account is inactive'}},
                     status=status.HTTP_400_BAD_REQUEST,

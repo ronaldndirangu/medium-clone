@@ -80,6 +80,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     # falsed.
     is_staff = models.BooleanField(default=False)
 
+    # The `is_reset` flag is used to allow change of password if true
+    is_reset = models.BooleanField(default=False)
+
     # A timestamp representing when this object was created.
     created_at = models.DateTimeField(auto_now_add=True)
 
