@@ -3,11 +3,15 @@ from django.db.models import Avg
 from rest_framework import mixins, status, viewsets,generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.exceptions import NotFound, PermissionDenied
+
+from .serializers import ArticleSerializer, RatingSerializer, TagSerializer, CommentSerializer
 from rest_framework.response import Response
+from rest_framework import mixins, status, viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import Article, Ratings,Comment
-from .serializers import ArticleSerializer, CommentSerializer, RatingSerializer
+from .models import Article, Ratings, Comment, Tag
 from .renderers import ArticleJSONRenderer, RatingJSONRenderer,CommentJSONRenderer
 
 
@@ -113,6 +117,15 @@ class ArticleViewSet(mixins.CreateModelMixin,
                 "You are not authorized to delete this article.")
 
         return Response(None, status=status.HTTP_204_NO_CONTENT)
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        tag = self.request.query_params.get('tag', None)
+        if tag is not None:
+            queryset = queryset.filter(tags__tag=tag)
+
+        return queryset
 
 
 class RateAPIView(APIView):
@@ -242,7 +255,6 @@ class LikesAPIView(APIView):
 
         if serializer_instance in Article.objects.filter(dislikes=request.user):
             serializer_instance.dislikes.remove(request.user)
-
         serializer_instance.likes.add(request.user)
 
         serializer = self.serializer_class(serializer_instance, context=serializer_context,
@@ -274,3 +286,15 @@ class DislikesAPIView(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+class TagListAPIView(generics.ListAPIView):
+    queryset = Tag.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = TagSerializer
+
+    def list(self, request):
+        serializer_data = self.get_queryset()
+        serializer = self.serializer_class(serializer_data, many=True)
+
+        return Response({
+            'tags': serializer.data
+        }, status=status.HTTP_200_OK)

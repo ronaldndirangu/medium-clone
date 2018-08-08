@@ -22,6 +22,9 @@ class Article(TimestampModel):
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
     dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True)
+    tags = models.ManyToManyField(
+        'articles.Tag', related_name='articles'
+    )
 
     def __str__(self):
         return self.title
@@ -71,3 +74,13 @@ def pre_save_article_receiver(sender, instance, *args, **kwargs):
 
 # Called just before a save is made in the db
 pre_save.connect(pre_save_article_receiver, sender=Article)
+
+
+class Tag(TimestampModel):
+    """This class defines the tag model"""
+
+    tag = models.CharField(max_length=255)
+    slug = models.SlugField(db_index=True, unique=True)
+
+    def __str__(self):
+        return '{}'.format(self.tag)
