@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework',
     'social_django',
+    'mptt',
     'authors.apps.authentication',
     'authors.apps.core',
     'authors.apps.profiles',

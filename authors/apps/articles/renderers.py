@@ -33,3 +33,22 @@ class RatingJSONRenderer(JSONRenderer):
         return json.dumps({
             'rate': data,
         })
+
+class CommentJSONRenderer(JSONRenderer):
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        """
+        Render the articles in a structured manner for the end user.
+        """
+        if data is not None:
+            if len(data) <= 1:
+                return json.dumps({
+                    'comment': data
+                })
+            return json.dumps({
+                'comments': data
+            })
+        return json.dumps({
+                'comment': 'No article found.'
+            })         
