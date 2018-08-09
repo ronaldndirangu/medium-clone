@@ -41,6 +41,16 @@ class ProfileModelTestCase(TestCase):
         Test that Profile model adds a timestamp 
         on profile creation. 
         """
-
         response = create_a_user()
         self.assertIsNotNone(response.profile.created_at)
+
+    def test_user_follow_and_unfollow(self):
+        """
+        A follow relationship can be created
+        """
+        user1 = create_a_user()
+        user2 = create_a_user("TestUser", "testuser@tests.com", "WhereTh3#")
+        user2.profile.follows.add(user1.profile)
+        self.assertTrue(user1.profile.is_follower(user2))
+        user2.profile.follows.remove(user1.profile)
+        self.assertFalse(user1.profile.is_follower(user2))

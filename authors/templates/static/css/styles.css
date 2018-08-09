@@ -88,3 +88,20 @@ i.icon-orange {
 .pagination li.active {
 	background-color: dodgerblue;
 }
+
+.follow {
+  border-color: #4CAF50;
+  color: green;
+  border-radius: .5rem;
+  padding: .25rem;
+  font-size: .85em;
+}
+
+.following {
+  border-color: #4CAF50;
+    color: white;
+  background-color: green;
+  border-radius: .5rem;
+  padding: .2rem;
+  font-size: .85em;
+}

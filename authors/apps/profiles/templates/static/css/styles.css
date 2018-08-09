@@ -53,3 +53,19 @@ main {
 .input-field .prefix.active {
     color: #000;
 }
+
+.follow {
+  border-color: #4CAF50;
+  color: green;
+  border-radius: .5rem;
+  padding: .25rem;
+  font-size: .85em;
+}
+
+.unfollow {
+  border-color: red;
+  color: red;
+  border-radius: .5rem;
+  padding: .25rem;
+  font-size: .85em;
+}

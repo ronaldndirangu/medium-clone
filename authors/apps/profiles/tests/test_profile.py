@@ -1,10 +1,9 @@
 from django.test import TestCase
-from rest_framework.test import APIClient
 from rest_framework import status
+from rest_framework.test import APIClient
 
 #my local imports
 from authors.apps.authentication.models import User
-from ..models import Profile
 
 
 def create_a_user(username="nerd", email="nerd@nerd.com", password="Secret123456"):
@@ -38,7 +37,11 @@ class ProfileTestcase(TestCase):
 
     def test_profile_retrieve(self):
         """Test api can retrieve a user profile"""
-        
+        response = self.client.get(
+            '/api/profiles/ananda/'
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
         create_a_user()
 
         response = self.client.get(

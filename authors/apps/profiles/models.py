@@ -1,4 +1,7 @@
 from django.db import models
+from django.conf import settings
+
+# User = settings.AUTH_USER_MODEL
 
 
 class Profile(models.Model):
@@ -14,5 +17,27 @@ class Profile(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    follows = models.ManyToManyField(
+        'self',
+        related_name='follower',
+        symmetrical=False
+    )
+
     def __str__(self):
         return '{}'.format(self.user.email)
+
+    def follow(self, profile):
+        """Follow another user if not already following"""
+        self.follows.add(profile)
+
+    def unfollow(self, profile):
+        """Unfollow another user if followed"""
+        self.follows.remove(profile)
+
+    def is_following(self, profile):
+        """Returns True if a user is followed by active user. False otherwise."""
+        return self.follows.filter(pk=profile.pk).exists()
+
+    def is_follower(self, profile):
+        """Returns True if a user is following active user; False otherwise."""
+        return self.follower.filter(pk=profile.pk).exists()

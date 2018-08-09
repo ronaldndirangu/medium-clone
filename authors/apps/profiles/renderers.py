@@ -8,12 +8,33 @@ class ProfileJSONRenderer(JSONRenderer):
     charset = 'utf-8'
 
     def render(self, data, media_type=None, renderer_context=None):
+        if data is not None:
+            if len(data) <= 1:
+                return json.dumps({
+                    'profile': data
+                })
+            return json.dumps({
+                'profiles': data
+            })
 
-        #handle rendering errors
-        errors = data.get('errors', None)
-        if errors is not None:
-            return super(ProfileJSONRenderer, self).render(data)
 
+class FollowersJSONRenderer(JSONRenderer):
+    """This class contains json renderer for Profile"""
+
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
         return json.dumps({
-            'profile': data
+            'followers': data
+        })
+
+
+class FollowingJSONRenderer(JSONRenderer):
+    """This class contains json renderer for Profile"""
+
+    charset = 'utf-8'
+
+    def render(self, data, media_type=None, renderer_context=None):
+        return json.dumps({
+            'following': data
         })
