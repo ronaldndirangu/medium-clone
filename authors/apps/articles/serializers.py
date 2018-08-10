@@ -53,14 +53,33 @@ class ArticleSerializer(serializers.ModelSerializer):
     average_rating = serializers.FloatField(required=False, read_only=True)
     comments = CommentSerializer(read_only=True, many=True)
     tagList = TagRelatedField(many=True, required=False, source='tags')
+    favorited = serializers.SerializerMethodField(method_name="is_favorited")
+    favoriteCount = serializers.SerializerMethodField(method_name='get_favorite_count')
+    
+
 
     class Meta:
         model = Article
         fields = ['title', 'slug', 'body','comments',
                   'description', 'image_url', 'created_at',
                   'updated_at', 'author', 'average_rating',
-                  'likes', 'dislikes', 'dislikes_count', 'likes_count','tagList']
+                  'likes', 'dislikes', 'dislikes_count', 'likes_count','tagList',
+                  'favorited', 'favoriteCount']
 
+
+    def get_favorite_count(self, instance):
+        
+        return instance.users_fav_articles.count()
+
+    def is_favorited(self, instance):
+        request = self.context.get('request')
+        if request is None:
+            return False
+        username = request.user.username
+        if instance.users_fav_articles.filter(user__username=username).count() == 0:
+            return False
+        return True
+            
     def create(self, validated_data):
         tags = validated_data.pop('tags', [])
 
@@ -139,6 +158,6 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('tag',)
     
-    def to_representation(self, obj):
-        return obj.tag
-    
+        def to_representation(self, obj):
+            return obj.tag
+       

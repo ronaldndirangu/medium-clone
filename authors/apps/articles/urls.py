@@ -1,7 +1,6 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-
-from .views import ArticleViewSet, RateAPIView, CommentsListCreateAPIView, CommentsDestroyGetCreateAPIView, DislikesAPIView, LikesAPIView, TagListAPIView
+from .views import ArticleViewSet, RateAPIView,CommentsListCreateAPIView, CommentsDestroyGetCreateAPIView,DislikesAPIView, LikesAPIView, TagListAPIView,FavoriteAPIView
 
 app_name = "articles"
 
@@ -18,4 +17,5 @@ urlpatterns = [
     path('articles/<slug>/like/', LikesAPIView.as_view()),
     path('articles/<slug>/dislike/', DislikesAPIView.as_view()),
     path('tags/', TagListAPIView.as_view()),
+    path('articles/<slug>/favorite/', FavoriteAPIView.as_view()),
 ]

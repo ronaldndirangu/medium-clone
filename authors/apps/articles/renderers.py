@@ -44,11 +44,23 @@ class CommentJSONRenderer(JSONRenderer):
         if data is not None:
             if len(data) <= 1:
                 return json.dumps({
-                    'comment': data
+                    'article': data
                 })
             return json.dumps({
-                'comments': data
+                'articles': data
             })
         return json.dumps({
-                'comment': 'No article found.'
-            })         
+            'article': 'No article found.'
+        })
+
+class FavoriteJSONRenderer(JSONRenderer):
+    charset = 'utf-8'
+    """
+        Render the favorited articles in a structured manner for the user.
+    """
+
+    def render(self, data, media_type=None, renderer_context=None):
+        
+        return json.dumps({
+            'articles':data
+        })

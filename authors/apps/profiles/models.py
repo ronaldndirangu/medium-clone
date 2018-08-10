@@ -16,15 +16,21 @@ class Profile(models.Model):
     interests = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    favorites = models.ManyToManyField('articles.Article', symmetrical=False, related_name='users_fav_articles')
     follows = models.ManyToManyField(
         'self',
         related_name='follower',
         symmetrical=False
     )
-
+    
     def __str__(self):
         return '{}'.format(self.user.email)
+
+    def favorite(self, article):
+        self.favorites.add(article)
+
+    def unfavorite(self, article):
+        self.favorites.remove(article)
 
     def follow(self, profile):
         """Follow another user if not already following"""
