@@ -56,7 +56,7 @@ main {
 
 /* text area height */
 textarea.materialize-textarea {
-	height: 10rem;
+	height: 4rem;
 }
 .article-header {
 	display: flex;
