@@ -53,6 +53,7 @@ class CommentJSONRenderer(JSONRenderer):
             'article': 'No article found.'
         })
 
+
 class FavoriteJSONRenderer(JSONRenderer):
     charset = 'utf-8'
     """
@@ -62,5 +63,16 @@ class FavoriteJSONRenderer(JSONRenderer):
     def render(self, data, media_type=None, renderer_context=None):
         
         return json.dumps({
-            'articles':data
+            'articles': data
+        })
+
+
+class CommentEditHistoryJSONRenderer(JSONRenderer):
+    charset = 'utf-8'
+    """
+        Render the comment edit history in a structured manner for the user.
+    """
+    def render(self, data, media_type=None, renderer_context=None):
+        return json.dumps({
+            'comment_history': data
         })

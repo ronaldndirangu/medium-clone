@@ -5,7 +5,6 @@ from rest_framework import status
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import force_authenticate
-from authors.apps.articles.models import Article,Comment
 from authors.apps.authentication.models import User
 from authors.apps.authentication.verification import SendEmail
 from authors.apps.authentication.views import Activate
@@ -66,8 +65,7 @@ class ViewTestCase(TestCase):
 
             }
         }
-       
-       
+
         """Initialize client"""
         self.factory = APIRequestFactory()
         self.client = APIClient()
@@ -134,6 +132,7 @@ class ViewTestCase(TestCase):
             HTTP_AUTHORIZATION='Token ' + token,
             format='json'
         )
+
     def create_comment(self, token, slug, comment):
         """Create comment"""
        
@@ -144,7 +143,7 @@ class ViewTestCase(TestCase):
             format='json'
         )
 
-    def create_thread(self, token, slug, comment ,id):
+    def create_thread(self, token, slug, comment, id):
         """Create comment"""
        
         return self.client.post(
@@ -153,9 +152,9 @@ class ViewTestCase(TestCase):
             HTTP_AUTHORIZATION='Token ' + token,
             format='json'
         )
+
     def get_comment(self, token, slug, comment):
         """Create comment"""
-       
         return self.client.get(
             '/api/articles/' + slug + '/comments/',
             comment,
@@ -208,7 +207,7 @@ class ViewTestCase(TestCase):
         token = self.login_verified_user(self.test_user)
         self.create_article(token, self.article)
         self.create_comment(token, 'tests', self.comment)
-        response = self.create_thread(token, 'tests', self.comment3,'2')
+        response = self.create_thread(token, 'tests', self.comment3, '2')
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -226,7 +225,7 @@ class ViewTestCase(TestCase):
         """
         self.create_user_unverified()
         self.create_article(self.login_unverified_user(), self.article)
-        response = self.create_comment(self.login_unverified_user(),'tests', self.comment)
+        response = self.create_comment(self.login_unverified_user(), 'tests', self.comment)
         self.assertIn("This user has not been verified",
                       response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -236,7 +235,7 @@ class ViewTestCase(TestCase):
         Tests that a user who has no valid token cannot create ancomment
         Tests both a user with an invalid token and without a token
         """
-        response = self.create_comment("",'tests', self.comment)
+        response = self.create_comment("", 'tests', self.comment)
         self.assertIn("Authentication credentials were not provided.",
                       response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
@@ -246,8 +245,36 @@ class ViewTestCase(TestCase):
         token = self.login_verified_user(self.test_user)
         self.create_article(token, self.article)
         self.create_comment(token, 'tests', self.comment)
-        response = self.delete_comment(token, 'test',self.comment,'2')
+        response = self.delete_comment(token, 'test', self.comment, '2')
         self.assertIn("A comment with this ID does not exist.",
                       response.content.decode())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
+
+    def test_update_and_retrieve_comment(self):
+        """
+        Test an authenticated user can edit a comment
+        """
+        token = self.login_verified_user(self.test_user)
+        response = self.client.put('api/articles/tests/comments/1/',
+                                   HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.create_article(token, self.article)
+        response = self.create_comment(token, 'tests', self.comment)
+        # test update comment
+        id = json.loads(response.content).get('articles').get('id')
+        url = reverse("articles:comment", args=['test', id])
+        response = self.client.put(url, {"comment": {"body": "updated comment"}},
+                                   format='json', HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test update comment comment similar to existing comment version
+        response = self.client.put(url, {"comment": {"body": "updated comment"}},
+                                   format='json', HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        # test retrieve comment edit history non existent comment
+        url = reverse("articles:comment_history", args=['test', 1001])
+        response = self.client.get(url, format='json', HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        # test retrieve comment history
+        url = reverse("articles:comment_history", args=['tests', id])
+        response = self.client.get(url, format='json', HTTP_AUTHORIZATION='Token ' + token)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)

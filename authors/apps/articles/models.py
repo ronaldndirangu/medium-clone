@@ -29,6 +29,7 @@ class Article(TimestampModel):
     def __str__(self):
         return self.title
 
+
 class Comment(MPTTModel,TimestampModel):
     body = models.TextField()
     parent = TreeForeignKey('self',related_name='reply_set',null=True ,on_delete=models.CASCADE)
@@ -40,6 +41,16 @@ class Comment(MPTTModel,TimestampModel):
     author = models.ForeignKey(
         'profiles.Profile', related_name='comments', on_delete=models.CASCADE
     )
+
+
+class CommentEditHistory(models.Model):
+    """
+    Define comment_edit_history table and functionality
+    """
+    body = models.TextField(null=False)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=False)
 
 
 class Ratings(models.Model):

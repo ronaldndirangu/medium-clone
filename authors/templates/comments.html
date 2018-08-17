@@ -88,25 +88,70 @@
                             <h5>Comments:</h5>
                         </span>
                         <p>
-                            <strong>Humlet (01/08/2018 09:45am):</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                            <strong>Johnah (01/08/2018 09:45am):</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                             sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud...
-                             <p><strong>view all 25 replies</strong></p>
+                            nostrud...<button class="follow right">Edit comment</button>
+
+                             <p><strong>view all 25 replies</strong>
+                                 <span class="follow right modal-trigger" href="#modal1">View edit history</span>
+
+                                  <!-- Modal Structure -->
+                                  <div id="modal1" class="modal bottom-sheet">
+                                    <div class="modal-content">
+                                      <h6>Comment edit history</h6>
+                                      <ul class="collapsible" data-collapsible="accordion">
+                                        <li>
+                                          <div class="collapsible-header">
+                                              <i class="material-icons">filter_drama</i>
+                                              01/08/2018 09:40am: Lorem ipsum dolor sit amet, sed do eiusmod tempor 
+                                              incididunt ut labore et dolore magna aliqua. </div>
+                                          <div class="collapsible-body"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p></div>
+                                        </li>
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">filter_drama</i>
+                                                01/08/2018 09:35am: Lorem ipsum dolor sit amet ed do eiusmod tempor incididunt ut labore et dolore
+                                                magna aliqua. Ut enim ad minim veniam, quis nostrud quis nostrud exercitation ullamco laboris nisi ut
+                                                aliquip ex ea commodo consequat. </div>
+                                            <div class="collapsible-body"><p>consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                                    magna aliqua. Ut enim ad minim veniam, quis nostrud quis nostrud exercitation ullamco laboris nisi ut
+                                                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                                                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                                    deserunt mollit anim id est laborum. </p></div>
+                                        </li>
+                                        <li>
+                                            <div class="collapsible-header">
+                                                <i class="material-icons">filter_drama</i>
+                                                01/08/2018 09:30am: Lorem ipsum dolor sit amet ed do eiusmod tempor incididunt ut labore et dolore
+                                                magna aliqua. Ut enim ad minim veniam, quis nostrud quis nostrud exercitation ullamco laboris nisi ut
+                                                aliquip ex ea commodo consequat.</div>
+                                            <div class="collapsible-body"><p>consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore
+                                                    magna aliqua. Ut enim ad minim veniam, quis nostrud quis nostrud exercitation ullamco laboris nisi ut
+                                                    aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum
+                                                    dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
+                                                    deserunt mollit anim id est laborum. </p></div>
+                                        </li>
+                                      </ul>
+                                    </div>
+                                  </div>
+                                <span class="badge" data-badge-caption="">Edited on: 03/08/2018 10:45am</span>
+                             </p>
                             <form class="col s12">
-      <div class="row">
-        <div class="input-field col s12">
-          <i class="material-icons prefix">mode_edit</i>
-          <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
-          <label id="reply" for="icon_prefix2">Reply to comment</label>
-        </div>
-      </div>
-    </form>
-    <a class="waves-effect waves-light btn-small">Reply</a>
+                                  <div class="row">
+                                    <div class="input-field col s12">
+                                      <i class="material-icons prefix">mode_edit</i>
+                                      <textarea id="icon_prefix2" class="materialize-textarea"></textarea>
+                                      <label id="reply" for="icon_prefix2">Reply to comment</label>
+                                    </div>
+                                  </div>
+                            </form>
+                                <a class="waves-effect waves-light btn-small">Reply</a>
 
                          <p> 
                             <strong>Budha12434424 (01/08/2018 08:45am):</strong> Lorem ipsum dolor sit amet, consectetur adipiscing
                             elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud...</p>
+                            quis nostrud...</p><span class="badge" data-badge-caption="">Edited on: 05/08/2018 10:45pm</span>
                             <p><strong>view all 25 replies</strong></p>
                             <form class="col s12">
       <div class="row">
@@ -136,4 +181,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
 </body>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.modal');
+    var instances = M.Modal.init(elems);
+  });
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.collapsible');
+    var instances = M.Collapsible.init(elems);
+  });
+</script>
 </html>
