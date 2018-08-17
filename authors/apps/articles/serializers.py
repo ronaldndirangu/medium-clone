@@ -17,12 +17,16 @@ class CommentSerializer(serializers.ModelSerializer):
         created_at = serializers.DateTimeField(read_only=True)
         updated_at = serializers.DateTimeField(read_only=True)
         reply_set = RecursiveSerializer(many=True, read_only=True)
+        comment_likes = serializers.SerializerMethodField()
+        comment_dislikes = serializers.SerializerMethodField()
 
         class Meta:
             model = Comment
             fields = [
                 'id',
                 'author',
+                'comment_likes',
+                'comment_dislikes',
                 'body',
                 'reply_set',
                 'created_at',
@@ -36,6 +40,12 @@ class CommentSerializer(serializers.ModelSerializer):
             return Comment.objects.create(
                 author=author, article=article,parent=parent, **validated_data
             )
+
+        def get_comment_likes(self, obj):                 
+            return obj.comment_likes.count()
+
+        def get_comment_dislikes(self, obj):
+            return obj.comment_dislikes.count()
 
         def is_edited(self):
             return False
@@ -61,30 +71,34 @@ class ArticleSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(read_only=True, many=True)
     tagList = TagRelatedField(many=True, required=False, source='tags')
     favorited = serializers.SerializerMethodField(method_name="is_favorited")
-    favoriteCount = serializers.SerializerMethodField(method_name='get_favorite_count')
+    favoriteCount = serializers.SerializerMethodField(
+                            method_name='get_favorite_count'
+                            )
 
     class Meta:
         model = Article
-        fields = ['title', 'slug', 'body','comments',
+        fields = ['title', 'slug', 'body', 'comments',
                   'description', 'image_url', 'created_at',
                   'updated_at', 'author', 'average_rating',
-                  'likes', 'dislikes', 'dislikes_count', 'likes_count','tagList',
+                  'likes', 'dislikes', 'dislikes_count',
+                  'likes_count', 'tagList',
                   'favorited', 'favoriteCount']
 
-
     def get_favorite_count(self, instance):
-        
+
         return instance.users_fav_articles.count()
 
     def is_favorited(self, instance):
         request = self.context.get('request')
         if request is None:
             return False
+
         username = request.user.username
         if instance.users_fav_articles.filter(user__username=username).count() == 0:
             return False
+
         return True
-            
+
     def create(self, validated_data):
         tags = validated_data.pop('tags', [])
 

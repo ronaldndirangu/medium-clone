@@ -1,16 +1,32 @@
 from django.db.models import Avg
-from .models import Article, Ratings
-from django.db.models import Count
-from rest_framework.exceptions import NotFound, PermissionDenied
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework import mixins, status, viewsets, generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
-from .models import Article, Ratings, Comment, Tag, CommentEditHistory
-from .serializers import ArticleSerializer, RatingSerializer, TagSerializer, CommentSerializer, UpdateCommentSerializer, CommentEditHistorySerializer
+from rest_framework.exceptions import NotFound, PermissionDenied
+from rest_framework.generics import (
+                                    CreateAPIView,
+                                    RetrieveUpdateDestroyAPIView,
+                                    ListAPIView
+                                    )
 from rest_framework.pagination import PageNumberPagination
-from .renderers import ArticleJSONRenderer, RatingJSONRenderer,CommentJSONRenderer, FavoriteJSONRenderer, CommentEditHistoryJSONRenderer
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .models import Article, Ratings, Comment, Tag, CommentEditHistory
+from .serializers import (
+                        ArticleSerializer,
+                        RatingSerializer,
+                        TagSerializer,
+                        CommentSerializer,
+                        UpdateCommentSerializer,
+                        CommentEditHistorySerializer
+                         )
+from .renderers import (
+                        ArticleJSONRenderer,
+                        RatingJSONRenderer,
+                        CommentJSONRenderer,
+                        FavoriteJSONRenderer,
+                        CommentLikeJSONRenderer,
+                        CommentEditHistoryJSONRenderer
+                        )
 
 
 class LargeResultsSetPagination(PageNumberPagination):
@@ -156,22 +172,28 @@ class RateAPIView(APIView):
             article = Article.objects.get(slug=slug)
         except Article.DoesNotExist:
             raise NotFound("An article with this slug does not exist")
-        ratings = Ratings.objects.filter(rater=request.user.profile, article=article).first()
+        ratings = Ratings.objects.filter(rater=request.user.profile,
+                                         article=article).first()
         if not ratings:
-            ratings = Ratings(article=article, rater=request.user.profile, stars=rating)
+            ratings = Ratings(
+                            article=article,
+                            rater=request.user.profile,
+                            stars=rating)
             ratings.save()
-            avg = Ratings.objects.filter(article=article).aggregate(Avg('stars'))
+            avg = Ratings.objects.filter(
+                                    article=article).aggregate(Avg('stars'))
             return Response({
-                "avg":avg
+                "avg": avg
                 }, status=status.HTTP_201_CREATED)
 
-        if ratings.counter >= 5: 
-            raise PermissionDenied("You are not allowed to rate this article more than 5 times.")
+        if ratings.counter >= 5:
+            raise PermissionDenied(
+                "You are not allowed to rate this article more than 5 times.")
         ratings.counter += 1
         ratings.stars = rating
         ratings.save()
         avg = Ratings.objects.filter(article=article).aggregate(Avg('stars'))
-        return Response({"avg":avg}, status=status.HTTP_201_CREATED)
+        return Response({"avg": avg}, status=status.HTTP_201_CREATED)
 
 
 class FavoriteAPIView(APIView):
@@ -185,7 +207,7 @@ class FavoriteAPIView(APIView):
         """
         Method that favorites articles.
         """
-        serializer_context = {'request':request}
+        serializer_context = {'request': request}
         try:
             article = Article.objects.get(slug=slug)
         except Article.DoesNotExist:
@@ -203,7 +225,7 @@ class FavoriteAPIView(APIView):
         """
         Method that favorites articles.
         """
-        serializer_context = {'request':request}
+        serializer_context = {'request': request}
         try:
             article = Article.objects.get(slug=slug)
         except Article.DoesNotExist:
@@ -215,7 +237,7 @@ class FavoriteAPIView(APIView):
             article,
             context=serializer_context
         )
- 
+
         return Response(serializer.data,  status=status.HTTP_200_OK)
 
 
@@ -254,12 +276,15 @@ class CommentsListCreateAPIView(generics.ListCreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class CommentsDestroyGetCreateAPIView(RetrieveUpdateDestroyAPIView, CreateAPIView):
+class CommentsDestroyGetCreateAPIView(
+                                      RetrieveUpdateDestroyAPIView,
+                                      CreateAPIView
+                                      ):
     lookup_url_kwarg = 'comment_pk'
     permission_classes = (IsAuthenticatedOrReadOnly,)
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    
+
     def destroy(self, request, article_slug=None, comment_pk=None):
         try:
             comment = Comment.objects.get(pk=comment_pk,)
@@ -271,7 +296,7 @@ class CommentsDestroyGetCreateAPIView(RetrieveUpdateDestroyAPIView, CreateAPIVie
         return Response(None, status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request,  article_slug=None, comment_pk=None):
-        data = request.data.get('comment',None)
+        data = request.data.get('comment', None)
         context = {'author': request.user.profile}
         try:
             context['article'] = Article.objects.get(slug=article_slug)
@@ -281,26 +306,42 @@ class CommentsDestroyGetCreateAPIView(RetrieveUpdateDestroyAPIView, CreateAPIVie
             context['parent'] = Comment.objects.get(pk=comment_pk)
         except Comment.DoesNotExist:
             raise NotFound('A comment with this id does not exists')
-            
+
         serializer = self.serializer_class(data=data, context=context)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def update(self, request, article_slug=None, comment_pk=None, *args, **kwargs):
+    def update(self, request, article_slug=None,
+               comment_pk=None, *args, **kwargs):
         serializer_class = UpdateCommentSerializer
         data = request.data.get('comment', None)
         try:
-            comment = Comment.objects.get(pk=comment_pk, author=request.user.profile)
+            comment = Comment.objects.get(pk=comment_pk,
+                                          author=request.user.profile)
         except Comment.DoesNotExist:
-            raise NotFound('This comment does not exist for authenticated user.')
+            raise NotFound(
+                'This comment does not exist for authenticated user.'
+                )
         if comment.body != data.get('body'):
             CommentEditHistory.objects.create(
-                body=comment.body, comment_id=comment.pk, updated_at=comment.updated_at)
-            updated_comment = serializer_class.update(data=data, instance=comment)
-            return Response(self.serializer_class(updated_comment).data, status=status.HTTP_200_OK)
-        return Response(self.serializer_class(comment).data, status=status.HTTP_200_OK)
+                body=comment.body,
+                comment_id=comment.pk,
+                updated_at=comment.updated_at
+                )
+            updated_comment = serializer_class.update(
+                data=data,
+                instance=comment
+                )
+            return Response(
+                self.serializer_class(updated_comment).data,
+                status=status.HTTP_200_OK
+                )
+        return Response(
+            self.serializer_class(comment).data,
+            status=status.HTTP_200_OK
+            )
 
 
 class CommentEditHistoryAPIView(ListAPIView):
@@ -333,11 +374,13 @@ class LikesAPIView(APIView):
         except Article.DoesNotExist:
             raise NotFound("An article with this slug does not exist")
 
-        if serializer_instance in Article.objects.filter(dislikes=request.user):
+        if serializer_instance in Article.objects.filter(
+                                            dislikes=request.user):
             serializer_instance.dislikes.remove(request.user)
         serializer_instance.likes.add(request.user)
 
-        serializer = self.serializer_class(serializer_instance, context=serializer_context,
+        serializer = self.serializer_class(serializer_instance,
+                                           context=serializer_context,
                                            partial=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -361,7 +404,8 @@ class DislikesAPIView(APIView):
 
         serializer_instance.dislikes.add(request.user)
 
-        serializer = self.serializer_class(serializer_instance, context=serializer_context,
+        serializer = self.serializer_class(serializer_instance,
+                                           context=serializer_context,
                                            partial=True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -379,3 +423,79 @@ class TagListAPIView(generics.ListAPIView):
         return Response({
             'tags': serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class LikeCommentLikesAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    renderer_classes = (CommentLikeJSONRenderer, )
+    serializer_class = CommentSerializer
+
+    def post(self, request,  article_slug=None, comment_pk=None):
+        serializer_context = {'request': request}
+        context = {'author': request.user.profile}
+
+        try:
+            context['article'] = Article.objects.get(slug=article_slug)
+        except Article.DoesNotExist:
+            raise NotFound('An article with this slug does not exist.')
+
+        try:
+            serializer_instance = Comment.objects.get(pk=comment_pk)
+        except Comment.DoesNotExist:
+            raise NotFound('A comment with this id does not exist')
+
+        if serializer_instance in Comment.objects.filter(
+                                            comment_likes=request.user):
+            serializer_instance.comment_likes.remove(request.user)
+        else:
+            serializer_instance.comment_likes.add(request.user)
+
+        if serializer_instance in Comment.objects.filter(
+                                            comment_dislikes=request.user):
+            serializer_instance.comment_dislikes.remove(request.user)
+            serializer_instance.comment_likes.add(request.user)
+
+        serializer = self.serializer_class(serializer_instance,
+                                           context=serializer_context,
+                                           partial=True)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class DislikeCommentLikesAPIView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly, )
+    renderer_classes = (CommentLikeJSONRenderer, )
+    serializer_class = CommentSerializer
+
+    def post(self, request,  article_slug=None, comment_pk=None):
+        serializer_context = {'request': request}
+        context = {'author': request.user.profile}
+
+        try:
+            context['article'] = Article.objects.get(slug=article_slug)
+        except Article.DoesNotExist:
+            raise NotFound('An article with this slug does not exist.')
+
+        try:
+            serializer_instance = Comment.objects.get(pk=comment_pk)
+        except Comment.DoesNotExist:
+            raise NotFound('A comment with this id does not exists')
+
+        if serializer_instance in Comment.objects.filter(
+                                            comment_dislikes=request.user):
+            serializer_instance.comment_dislikes.remove(request.user)
+        else:
+            serializer_instance.comment_dislikes.add(request.user)
+
+        if serializer_instance in Comment.objects.filter(
+                                            comment_likes=request.user):
+            serializer_instance.comment_likes.remove(request.user)
+            serializer_instance.comment_dislikes.add(request.user)
+
+        serializer = self.serializer_class(
+                                        serializer_instance,
+                                        context=serializer_context,
+                                        partial=True
+                                        )
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -76,3 +76,16 @@ class CommentEditHistoryJSONRenderer(JSONRenderer):
         return json.dumps({
             'comment_history': data
         })
+
+
+class CommentLikeJSONRenderer(JSONRenderer):
+    charset = 'utf-8'
+    """
+        Render the favorited articles in a structured manner for the user.
+    """
+
+    def render(self, data, media_type=None, renderer_context=None):
+        
+        return json.dumps({
+            'comment':data
+        })
