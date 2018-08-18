@@ -10,7 +10,8 @@ from .views import (ArticleViewSet,
                     FavoriteAPIView,
                     LikeCommentLikesAPIView,
                     DislikeCommentLikesAPIView,
-                    CommentEditHistoryAPIView
+                    CommentEditHistoryAPIView,
+                    FilterAPIView
                     )
 
 app_name = "articles"
@@ -29,6 +30,8 @@ urlpatterns = [
     path('articles/<slug>/dislike/', DislikesAPIView.as_view()),
     path('tags/', TagListAPIView.as_view()),
     path('articles/<slug>/favorite/', FavoriteAPIView.as_view()),
+
+    path('articles', FilterAPIView.as_view(), name='filter'),
     path('articles/<article_slug>/comments/<comment_pk>/like/',
          LikeCommentLikesAPIView.as_view()),
     path('articles/<article_slug>/comments/<comment_pk>/dislike/',

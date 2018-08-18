@@ -1,4 +1,10 @@
 from django.db.models import Avg
+from django.conf import settings
+from django.contrib.postgres.search import TrigramSimilarity
+from rest_framework import mixins, status, viewsets, generics
+from rest_framework.generics import RetrieveUpdateDestroyAPIView
+from .models import Article, Ratings
+from django.db.models import Count
 from rest_framework import mixins, status, viewsets, generics
 from rest_framework.exceptions import NotFound, PermissionDenied
 from rest_framework.generics import (
@@ -10,6 +16,17 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .models import Article, Ratings, Comment, Tag
+
+from .serializers import (
+    ArticleSerializer, RatingSerializer, TagSerializer, CommentSerializer
+)
+from rest_framework.pagination import PageNumberPagination
+from .renderers import (
+    ArticleJSONRenderer, RatingJSONRenderer,
+    CommentJSONRenderer, FavoriteJSONRenderer
+)
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from .models import Article, Ratings, Comment, Tag, CommentEditHistory
 from .serializers import (
                         ArticleSerializer,
@@ -186,6 +203,10 @@ class RateAPIView(APIView):
                 "avg": avg
                 }, status=status.HTTP_201_CREATED)
 
+        if ratings.counter >= 5: 
+            raise PermissionDenied(
+                "You are not allowed to rate this article more than 5 times."
+            )
         if ratings.counter >= 5:
             raise PermissionDenied(
                 "You are not allowed to rate this article more than 5 times.")
@@ -425,6 +446,43 @@ class TagListAPIView(generics.ListAPIView):
         }, status=status.HTTP_200_OK)
 
 
+class FilterAPIView(generics.ListAPIView):
+
+    model = Article
+    queryset = Article.objects.all()
+    permission_classes = (AllowAny,)
+    serializer_class = ArticleSerializer
+    context_object_name = 'articles'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.config_kwargs = {}
+        search_settings = getattr(settings, 'ARTICLE_SEARCH_SETTINGS', {})
+        if 'config' in search_settings:
+            self.config_kwargs['config'] = search_settings['config']
+
+    def get_queryset(self):
+        queryset = self.queryset
+
+        title = self.request.query_params.get('title', None)
+        if title is not None:
+            queryset = queryset.annotate(
+                similarity=TrigramSimilarity('title', title),
+            ).filter(similarity__gt=0.3).order_by('-similarity')
+        author = self.request.query_params.get('author', None)
+        if author is not None:
+            queryset = queryset.annotate(
+                similarity=TrigramSimilarity(
+                    'author__user__username', author),
+            ).filter(similarity__gt=0.3).order_by('-similarity')
+        tag = self.request.query_params.get('tag', None)
+        if tag is not None:
+            queryset = queryset.annotate(
+                similarity=TrigramSimilarity(
+                    'tags__tag', tag),
+            ).filter(similarity__gt=0.3).order_by('-similarity')
+        return queryset.order_by('created_at')
+      
 class LikeCommentLikesAPIView(APIView):
     permission_classes = (IsAuthenticatedOrReadOnly, )
     renderer_classes = (CommentLikeJSONRenderer, )

@@ -105,3 +105,15 @@ i.icon-orange {
   padding: .2rem;
   font-size: .85em;
 }
+
+.dropdown{
+	float: left;
+	margin-top: 20px;
+}
+
+.search {
+	margin-top: 15px;
+	float:right;
+	width: 85%;
+	background-color: #66CDAA;	
+}
