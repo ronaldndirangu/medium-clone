@@ -1,13 +1,15 @@
 """
 Module contains Models for article related tables
 """
-from authors.apps.authentication.models import User
-from authors.apps.core.models import TimestampModel
-from authors.apps.profiles.models import Profile
 from django.db import models
-from mptt.models import MPTTModel, TreeForeignKey
-from django.db.models.signals import pre_save
+from django.db.models.signals import post_save, pre_save
 from django.utils.text import slugify
+from mptt.models import MPTTModel, TreeForeignKey
+from notifications.signals import notify
+from authors.apps.authentication.models import User
+from authors.apps.profiles.models import Profile
+from authors.apps.core.models import TimestampModel
+from authors.apps.articles.notification_emails import SendEmail
 
 
 class Article(TimestampModel):
@@ -21,7 +23,8 @@ class Article(TimestampModel):
     image_url = models.URLField(blank=True, null=True)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE)
     likes = models.ManyToManyField(User, related_name='likes', blank=True)
-    dislikes = models.ManyToManyField(User, related_name='dislikes', blank=True)
+    dislikes = models.ManyToManyField(
+        User, related_name='dislikes', blank=True)
     tags = models.ManyToManyField(
         'articles.Tag', related_name='articles'
     )
@@ -69,6 +72,16 @@ class Ratings(models.Model):
     stars = models.IntegerField(null=False)
 
 
+class Tag(TimestampModel):
+    """This class defines the tag model"""
+
+    tag = models.CharField(max_length=255)
+    slug = models.SlugField(db_index=True, unique=True)
+
+    def __str__(self):
+        return '{}'.format(self.tag)
+
+
 def pre_save_article_receiver(sender, instance, *args, **kwargs):
     """
     Method uses a signal to add slug to an article before saving it
@@ -91,11 +104,44 @@ def pre_save_article_receiver(sender, instance, *args, **kwargs):
 pre_save.connect(pre_save_article_receiver, sender=Article)
 
 
-class Tag(TimestampModel):
-    """This class defines the tag model"""
+def notify_followers_new_article(sender, instance, created, **kwargs):
+    """
+    Notify followers of new article posted.
+    """
+    user = User.objects.get(pk=instance.author.id)
+    title = instance.title
+    author = instance.author.user.get_full_name()
+    recipients = []
+    for follower in user.profile.follower.all():
+        if follower.user.get_notified:
+            recipients.append(follower.user)
+        SendEmail().send_article_notification_email(
+            follower.user.email, title, author)
+    notify.send(instance, recipient=recipients, verb='was posted', slug=instance.slug,
+                title=instance.title, author=instance.author.user.get_full_name())
 
-    tag = models.CharField(max_length=255)
-    slug = models.SlugField(db_index=True, unique=True)
 
-    def __str__(self):
-        return '{}'.format(self.tag)
+post_save.connect(notify_followers_new_article, sender=Article)
+
+
+def notify_comments_favorited_articles(sender, instance, created, **kwargs):
+    """
+    Signal that notifies users on comments on favorited items
+    """
+    users = instance.article.users_fav_articles.all()
+    title = instance.article.title
+    slug = instance.article.slug
+    author = instance.article.author.user.get_full_name()
+    commenter = instance.author.user.get_full_name()
+    comment = instance.body
+    recipients = []
+    for user in users:
+        if user.user.get_notified:
+            recipients.append(user.user)
+        SendEmail().send_comment_notification_email(
+            user.user.email, title, author, commenter)
+    notify.send(instance, recipient=recipients,
+                verb='was commented on', slug=slug, title=title, author=author, commenter=commenter, comment=comment)
+
+
+post_save.connect(notify_comments_favorited_articles, sender=Comment)

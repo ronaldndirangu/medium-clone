@@ -1,7 +1,8 @@
 from django.urls import path
 from rest_framework import routers
 from .views import (
-    LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView, Activate, ExchangeToken, ResetPassAPIView, Reset, PassResetAPIView
+    LoginAPIView, RegistrationAPIView, UserRetrieveUpdateAPIView, Activate, ExchangeToken,
+    ResetPassAPIView, Reset, PassResetAPIView, NotificationToggleViewSet
 )
 app_name = 'authentication'
 urlpatterns = [
@@ -13,4 +14,6 @@ urlpatterns = [
     path('users/reset_pass/', ResetPassAPIView.as_view()),
     path('reset/<uidb64>/<token>/', Reset.as_view(), name="reset"),
     path('users/pass_reset/', PassResetAPIView.as_view()),
+    path('notifications/toggle/',
+         NotificationToggleViewSet.as_view({'put': 'update'})),
 ]

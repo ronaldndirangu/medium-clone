@@ -233,3 +233,25 @@ class ViewTestCase(TestCase):
         token = self.login_verified_user(self.testUser1)
         response = self.dislike_article(token, 'unexisting-article')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_user_can_undo_like(self):
+        """
+        Test that when a user can undo a like.
+        """
+        token = self.login_verified_user(self.testUser1)
+        response = self.create_article(token, self.testArticle)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.like_article(token, 'how-to-train-your-dragon')
+        self.like_article(token, 'how-to-train-your-dragon')
+        self.assertEqual(json.loads(response.content).get('articles').get('likes_count'), 0)
+
+    def test_user_can_undo_dislike(self):
+        """
+        Test that when a user can undo a like.
+        """
+        token = self.login_verified_user(self.testUser1)
+        response = self.create_article(token, self.testArticle)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.dislike_article(token, 'how-to-train-your-dragon')
+        self.dislike_article(token, 'how-to-train-your-dragon')
+        self.assertEqual(json.loads(response.content).get('articles').get('dislikes_count'), 0)

@@ -2,7 +2,7 @@ import jwt
 from datetime import datetime, timedelta
 from requests.exceptions import HTTPError
 
-from rest_framework import status
+from rest_framework import status, mixins, viewsets
 from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -19,7 +19,7 @@ from social_core.exceptions import MissingBackend
 from .renderers import UserJSONRenderer
 from .verification import SendEmail, account_activation_token
 from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer, ResetPassSerializer, PassResetSerializer
+    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer, ResetPassSerializer, PassResetSerializer, NotificationToggleSerializer
 )
 
 
@@ -142,7 +142,7 @@ class ResetPassAPIView(APIView):
 
 class PassResetAPIView(APIView):
     """
-        View class that allows user to set a new password upon receiving the reset 
+        View class that allows user to set a new password upon receiving the reset
         password token
     """
     queryset = User.objects.all()
@@ -276,3 +276,19 @@ class ExchangeToken(CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
 
             )
+
+
+class NotificationToggleViewSet(mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    permission_classes = (IsAuthenticated, )
+    serializer_class = NotificationToggleSerializer
+    renderer_classes = (UserJSONRenderer, )
+
+    def update(self, request):
+        if request.user.get_notified:
+            request.user.get_notified = False
+        else:
+            request.user.get_notified = True
+        request.user.save()
+        serializer = self.serializer_class(request.user, partial=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

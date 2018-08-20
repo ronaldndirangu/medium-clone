@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+import dj_database_url
+# Configure Django App for Heroku.
+import django_heroku
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -46,6 +50,7 @@ INSTALLED_APPS = [
     'authors.apps.core',
     'authors.apps.profiles',
     'authors.apps.articles',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -159,7 +164,7 @@ REST_FRAMEWORK = {
 }
 
 EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_PORT = 587 
+EMAIL_PORT = 587
 EMAIL_HOST_USER = 'apikey'
 EMAIL_USE_TLS = True
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
@@ -170,23 +175,23 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.twitter.TwitterOAuth',
 
     'social_core.backends.google.GoogleOAuth2',
-    
+
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SOCIAL_AUTH_FACEBOOK_KEY =  os.environ.get("FbKey","none")
-SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("FbSecret","none")
+SOCIAL_AUTH_FACEBOOK_KEY = os.environ.get("FbKey", "none")
+SOCIAL_AUTH_FACEBOOK_SECRET = os.environ.get("FbSecret", "none")
 SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
 }
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email','username']
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GoogleKey","none")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET  = os.environ.get("GoogleSecret","none")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = ['email', 'username']
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get("GoogleKey", "none")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ.get("GoogleSecret", "none")
 
-SOCIAL_AUTH_TWITTER_KEY = os.environ.get("TwitterKey","none")
-SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("TwitterSecret","none")
+SOCIAL_AUTH_TWITTER_KEY = os.environ.get("TwitterKey", "none")
+SOCIAL_AUTH_TWITTER_SECRET = os.environ.get("TwitterSecret", "none")
 
 REST_AUTH_REGISTER_SERIALIZERS = (
     "authors.apps.authentication.serializers.RegistrationSerializer",
@@ -198,7 +203,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.auth_allowed',
     'social_core.pipeline.social_auth.social_user',
     'social_core.pipeline.user.get_username',
-    'social_core.pipeline.social_auth.associate_by_email',  
+    'social_core.pipeline.social_auth.associate_by_email',
     'social_core.pipeline.user.create_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
@@ -209,12 +214,12 @@ SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'email']
 SOCIAL_AUTH_USER_FIELDS = ['email', 'username']
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-# Configure Django App for Heroku.
-import django_heroku
 django_heroku.settings(locals())
-import dj_database_url
 
 db_from_env = dj_database_url.config(conn_max_age=500)
 DATABASES['default'].update(db_from_env)
+
+
+DJANGO_NOTIFICATIONS_CONFIG = {'USE_JSONFIELD': True}
 
 TEST_RUNNER = 'authors.testrunner.TestRunner'

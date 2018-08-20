@@ -1,9 +1,11 @@
 import re
+
+from authors.apps.profiles.serializers import ProfileSerializer
+from notifications.models import Notification
 from rest_framework import serializers
 from .models import Article, Comment, Ratings, Tag, CommentEditHistory
 from .tag_relations import TagRelatedField
 
-from authors.apps.profiles.serializers import ProfileSerializer
 
 
 class RecursiveSerializer(serializers.Serializer):
@@ -13,42 +15,42 @@ class RecursiveSerializer(serializers.Serializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-        author = ProfileSerializer(required=False)
-        created_at = serializers.DateTimeField(read_only=True)
-        updated_at = serializers.DateTimeField(read_only=True)
-        reply_set = RecursiveSerializer(many=True, read_only=True)
-        comment_likes = serializers.SerializerMethodField()
-        comment_dislikes = serializers.SerializerMethodField()
+    author = ProfileSerializer(required=False)
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+    reply_set = RecursiveSerializer(many=True, read_only=True)
+    comment_likes = serializers.SerializerMethodField()
+    comment_dislikes = serializers.SerializerMethodField()
 
-        class Meta:
-            model = Comment
-            fields = [
-                'id',
-                'author',
-                'comment_likes',
-                'comment_dislikes',
-                'body',
-                'reply_set',
-                'created_at',
-                'updated_at',
-            ]
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'author',
+            'comment_likes',
+            'comment_dislikes',
+            'body',
+            'reply_set',
+            'created_at',
+            'updated_at',
+        ]
 
-        def create(self, validated_data):
-            article = self.context['article']
-            author = self.context['author']
-            parent = self.context.get('parent', None)
-            return Comment.objects.create(
-                author=author, article=article,parent=parent, **validated_data
-            )
+    def create(self, validated_data):
+        article = self.context['article']
+        author = self.context['author']
+        parent = self.context.get('parent', None)
+        return Comment.objects.create(
+            author=author, article=article,parent=parent, **validated_data
+        )
 
-        def get_comment_likes(self, obj):                 
-            return obj.comment_likes.count()
+    def get_comment_likes(self, obj):                 
+        return obj.comment_likes.count()
 
-        def get_comment_dislikes(self, obj):
-            return obj.comment_dislikes.count()
+    def get_comment_dislikes(self, obj):
+        return obj.comment_dislikes.count()
 
-        def is_edited(self):
-            return False
+    def is_edited(self):
+        return False
 
 
 class ArticleSerializer(serializers.ModelSerializer):
@@ -77,7 +79,7 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Article
-        fields = ['title', 'slug', 'body', 'comments',
+        fields = ['id', 'title', 'slug', 'body', 'comments',
                   'description', 'image_url', 'created_at',
                   'updated_at', 'author', 'average_rating',
                   'likes', 'dislikes', 'dislikes_count',
@@ -142,7 +144,7 @@ class RatingSerializer(serializers.Serializer):
     """
 
     rating = serializers.IntegerField(required=True)
-   
+
     class Meta:
         model = Article
         fields = ['rating', 'total_rating', 'raters']
@@ -174,10 +176,30 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('tag',)
-    
+
         def to_representation(self, obj):
             return obj.tag
 
+
+class GenericNotificationRelatedField(serializers.RelatedField):
+
+    def to_representation(self, value):
+        if isinstance(value, Article):
+            serializer = ArticleSerializer(value)
+
+        return serializer.data
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    """
+    Defines the notifications serializer
+    """
+
+    class Meta:
+        model = Notification
+        fields = ['id', 'unread', 'verb',
+                  'level', 'timestamp', 'data', 'emailed', 'recipient']
+        
 
 class UpdateCommentSerializer(serializers.Serializer):
     """
@@ -208,3 +230,4 @@ class CommentEditHistorySerializer(serializers.Serializer):
     class Meta:
         model = CommentEditHistory
         fields = ('body', 'created_at', 'updated_at')
+

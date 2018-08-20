@@ -284,3 +284,12 @@ class SocialSerializer(serializers.Serializer):
         trim_whitespace=True,
     )
 
+
+class NotificationToggleSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(max_length=255)
+    username = serializers.CharField(max_length=255, read_only=True)
+    get_notified = serializers.BooleanField()
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'get_notified']
