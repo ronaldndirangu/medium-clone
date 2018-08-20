@@ -1,391 +1,457 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>Authors Haven</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel='shortcut icon' type='image/x-icon' href='static/images/favicon.ico' />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-    <link rel="stylesheet" href="static/css/styles.css">
-</head>
+    <head>
+        <title>Authors Haven</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel='shortcut icon' type='image/x-icon'
+            href='static/images/favicon.ico' />
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+        <link rel="stylesheet" href="static/css/styles.css">
+    </head>
 
-<body>
-    <header>
-        <nav>
-            <div class="nav-wrapper blue accent-4">
-                <div class="container">
-                    <a href="#" class="brand-logo">
-                        <div class="logoimage">
-                            <img class="logoimage" src="static/images/logo.png" alt="App logo">
-                        </div>
-                    </a>
-                    <ul id="nav-mobile" class="right hide-on-med-and-down">
-                        <li>
-                            <div class="notification dropdown-trigger" data-target='dropdown1'>
-                                <i class="material-icons icon-orange">
-                                    notifications
+    <body>
+        <header>
+            <nav>
+                <div class="nav-wrapper blue accent-4">
+                    <div class="container">
+                        <a href="#" class="brand-logo">
+                            <div class="logoimage">
+                                <img class="logoimage"
+                                    src="static/images/logo.png" alt="App logo">
+                            </div>
+                        </a>
+                        <ul id="nav-mobile" class="right hide-on-med-and-down">
+                            <li>
+                                <div class="notification dropdown-trigger"
+                                    data-target='dropdown1'>
+                                    <i class="material-icons icon-orange">
+                                        notifications
+                                    </i>
+                                    <div class="badge">
+                                        <p>3</p>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <a href="#"> Johnah Karim </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="material-icons">exit_to_app</i>
+                                </a>
+
+                            </li>
+                        </ul>
+                        <!-- Dropdown Structure -->
+                        <ul id='dropdown1' class='dropdown-content'>
+                            <div class="notifications-buttons">
+                                <button class="read-notifications">Mark as Read</button>
+                                <button class="delete-notifications">Delete</button>
+                            </div>
+                            <li class='notify'>
+                                <i class="material-icons large">
+                                    account_circle
                                 </i>
-                                <div class="badge">
-                                    <p>3</p>
+                                <a href="#!">Danny Deneraes has commented on
+                                    Doe's article "The Andelan Way"</a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li class='notify'>
+                                <i class="material-icons large">
+                                    account_circle
+                                </i>
+                                <a href="#!">Danny Deneraes has commented on
+                                    Doe's article "The Andelan Way"</a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li class='notify'>
+                                <i class="material-icons large">
+                                    account_circle
+                                </i>
+                                <a href="#!">Danny Deneraes has commented on
+                                    Doe's article "The Andelan Way"</a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li class='notify-read'>
+                                <i class="material-icons large">
+                                    account_circle
+                                </i>
+                                <a href="#!">Danny Deneraes has commented on
+                                    Doe's article "The Andelan Way"</a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                            <li class='notify-read'>
+                                <i class="material-icons large">
+                                    account_circle
+                                </i>
+                                <a href="#!">Danny Deneraes has commented on
+                                    Doe's article "The Andelan Way"</a>
+                            </li>
+                            <li class="divider" tabindex="-1"></li>
+                        </ul>
+                        <!-- End of dropdown Structure -->
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="container">
+            <div class="nav-wrapper">
+                <form class="search">
+                    <div class="input-field">
+                        <input id="search" type="search" required>
+                        <label class="label-icon" for="search">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <i class="material-icons">close</i>
+                    </div>
+                </form>
+                <div class="dropdown">
+                    <ul id="dropdown" class="dropdown-content">
+                        <li>
+                            <a href="#">Title</a>
+                        </li>
+                        <li>
+                            <a href="#!">Author</a>
+                        </li>
+                        <li>
+                            <a href="#">Tag</a>
+                        </li>
+                    </ul>
+
+                    <a class="btn dropdown-button" href="#"
+                        data-activates="dropdown">Search by
+                        <i class="mdi-navigation-arrow-drop-down right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="card grey lighten-4">
+                        <div class="card-content">
+                            <span class="card-title text-red">
+                                <div class="article-header">
+                                    <h4 class="blue-text">Train your Dragon</h4>
+                                    <div class="blue-text col s12">
+                                        <h6>Tag list:
+                                            <small class="chips">dragon</small>
+                                            <small class="chips">training</small>
+                                        </h6>
+                                    </div>
+                                    <div class="ratings">
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star_half</i>
+                                        <div class="stat">4.8</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="#"> Johnah Karim </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="material-icons">exit_to_app</i>
+                                <div class="favorites">
+                                    <i class="material-icons icon-orange">favorite</i>
+                                </div>
+                                <h6>
+                                    <i>Wanna know how not to get devoured?</i>
+                                </h6>
+                            </span>
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore
+                                et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud...</p>
+                            <hr>
+                            <small>By James Pink &nbsp;
+                                <button class="follow">Follow</button>,
+                                01/08/2018 08:12am &nbsp;
+
+                            </small>
+                        </div>
+
+                        <div class="card-action">
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">share</i>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_up</i>
+                                <span>392</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_down</i>
+                                <span>59</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">class</i>
+                                <span>Bookmark</span>
+                            </button>
+                            <a class="right blue-grey-text"
+                                href="http://www.tutorialspoint.com">
+                                Read more...</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m6">
+                    <div class="card grey lighten-4">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <div class="article-header">
+                                    <h4 class="blue-text">The Perfect Mess</h4>
+                                    <div class="blue-text col s12">
+                                        <h6>Tag list:
+                                            <small class="chips">perfect</small>
+                                            <small class="chips">mess</small>
+                                        </h6>
+                                    </div>
+                                    <div class="ratings">
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star_half</i>
+                                        <div class="stat">4.6</div>
+                                    </div>
+                                </div>
+                                <div class="favorites">
+                                    <i class="material-icons icon-orange">favorite</i>
+                                </div>
+                                <h6>
+                                    <i>Your code lives on</i>
+                                </h6>
+                            </span>
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore
+                                et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud...</p>
+                            <hr>
+                            <small>By Lucy Kabambe &nbsp;
+                                <button class="following">Following</button>,
+                                01/08/2018 08:30am
+                            </small>
+                        </div>
+
+                        <div class="card-action">
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">share</i>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_up</i>
+                                <span>39</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_down</i>
+                                <span>5</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">class</i>
+                                <span>Bookmark</span>
+                            </button>
+                            <a class="right blue-grey-text"
+                                href="http://www.tutorialspoint.com">
+                                Read more...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 m6">
+                    <div class="card grey lighten-4">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <div class="article-header">
+                                    <h4 class="blue-text">My Journey Through
+                                        Coding</h4>
+                                    <div class="blue-text col s12">
+                                        <h6>Tag list:
+                                            <small class="chips">journey</small>
+                                            <small class="chips">coding</small>
+                                        </h6>
+                                    </div>
+                                    <div class="ratings">
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star_border</i>
+                                        <i class="material-icons icon-orange">star_border</i>
+                                        <div class="stat">3.2</div>
+                                    </div>
+                                </div>
+                                <div class="favorites">
+                                    <i class="material-icons icon-black">favorite</i>
+                                </div>
+                                <h6>
+                                    <i>Grab a cup of coffee and read on</i>
+                                </h6>
+                            </span>
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore
+                                et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud...</p>
+                            <hr>
+                            <small>By Patrick Mursik &nbsp;
+                                <button class="follow">Follow</button>,
+                                01/08/2018 09:18am
+                            </small>
+                        </div>
+
+                        <div class="card-action">
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">share</i>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_up</i>
+                                <span>77</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_down</i>
+                                <span>19</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">class</i>
+                                <span>Bookmark</span>
+                            </button>
+                            <a class="right blue-grey-text"
+                                href="http://www.tutorialspoint.com">
+                                Read more...</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12 m6">
+                    <div class="card grey lighten-4">
+                        <div class="card-content">
+                            <span class="card-title">
+                                <div class="article-header">
+                                    <h4 class="blue-text">Django Rest Framework</h4>
+                                    <div class="blue-text col s12">
+                                        <h6>Tag list:
+                                            <small class="chips">django-rest</small>
+                                            <small class="chips">framework</small>
+                                        </h6>
+                                    </div>
+                                    <div class="ratings">
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star</i>
+                                        <i class="material-icons icon-orange">star_half</i>
+                                        <i class="material-icons icon-orange">star_border</i>
+                                        <div class="stat">3.5</div>
+                                    </div>
+                                </div>
+                                <div class="favorites">
+                                    <i class="material-icons icon-orange">favorite</i>
+                                </div>
+                                <h6>
+                                    <i>Is it the best thing to happen to Python
+                                        programming?</i>
+                                </h6>
+                            </span>
+                            <p>Lorem ipsum dolor sit amet, consectetur
+                                adipiscing elit, sed do eiusmod tempor
+                                incididunt ut labore
+                                et dolore magna aliqua. Ut enim ad minim veniam,
+                                quis nostrud...</p>
+                            <hr>
+                            <small>By Lucky Hale &nbsp;
+                                <button class="follow">Follow</button>,
+                                01/08/2018 09:30am
+                            </small>
+                        </div>
+
+                        <div class="card-action">
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">share</i>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_up</i>
+                                <span>11</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">thumb_down</i>
+                                <span>1</span>
+                            </button>
+                            <button class="btn waves-effect waves-light
+                                blue-grey">
+                                <i class="material-icons">class</i>
+                                <span>Bookmark</span>
+                            </button>
+                            <a class="right blue-grey-text"
+                                href="http://www.tutorialspoint.com">
+                                Read more...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large waves-effect waves-light green">
+                <i class="material-icons">add</i>
+            </a>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m6 offset-m4">
+                    <ul class="pagination">
+                        <li class="disabled">
+                            <a href="#!">
+                                <i class="material-icons">chevron_left</i>
                             </a>
-
+                        </li>
+                        <li class="active">
+                            <a href="#!">1</a>
+                        </li>
+                        <li class="waves-effect">
+                            <a href="#!">2</a>
+                        </li>
+                        <li class="waves-effect">
+                            <a href="#!">3</a>
+                        </li>
+                        <li class="waves-effect">
+                            <a href="#!">4</a>
+                        </li>
+                        <li class="waves-effect">
+                            <a href="#!">5</a>
+                        </li>
+                        <li class="waves-effect">
+                            <a href="#!">
+                                <i class="material-icons">chevron_right</i>
+                            </a>
                         </li>
                     </ul>
-                    <!-- Dropdown Structure -->
-                    <ul id='dropdown1' class='dropdown-content'>
-                        <div class="notifications-buttons">
-                            <button class="read-notifications">Mark as Read</button>
-                            <button class="delete-notifications">Delete</button>
-                        </div>
-                        <li class='notify'>
-                            <i class="material-icons large">
-                                account_circle
-                            </i>
-                            <a href="#!">Danny Deneraes has commented on Doe's article "The Andelan Way"</a>
-                        </li>
-                        <li class="divider" tabindex="-1"></li>
-                        <li class='notify'>
-                            <i class="material-icons large">
-                                account_circle
-                            </i>
-                            <a href="#!">Danny Deneraes has commented on Doe's article "The Andelan Way"</a>
-                        </li>
-                        <li class="divider" tabindex="-1"></li>
-                        <li class='notify'>
-                            <i class="material-icons large">
-                                account_circle
-                            </i>
-                            <a href="#!">Danny Deneraes has commented on Doe's article "The Andelan Way"</a>
-                        </li>
-                        <li class="divider" tabindex="-1"></li>
-                        <li class='notify-read'>
-                            <i class="material-icons large">
-                                account_circle
-                            </i>
-                            <a href="#!">Danny Deneraes has commented on Doe's article "The Andelan Way"</a>
-                        </li>
-                        <li class="divider" tabindex="-1"></li>
-                        <li class='notify-read'>
-                            <i class="material-icons large">
-                                account_circle
-                            </i>
-                            <a href="#!">Danny Deneraes has commented on Doe's article "The Andelan Way"</a>
-                        </li>
-                        <li class="divider" tabindex="-1"></li>
-                    </ul>
-                    <!-- End of dropdown Structure -->
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <div class="nav-wrapper">
-            <form class="search">
-                <div class="input-field">
-                    <input id="search" type="search" required>
-                    <label class="label-icon" for="search">
-                        <i class="material-icons">search</i>
-                    </label>
-                    <i class="material-icons">close</i>
-                </div>
-            </form>
-            <div class="dropdown">
-                <ul id="dropdown" class="dropdown-content">
-                    <li>
-                        <a href="#">Title</a>
-                    </li>
-                    <li>
-                        <a href="#!">Author</a>
-                    </li>
-                    <li>
-                        <a href="#">Tag</a>
-                    </li>
-                </ul>
-
-                <a class="btn dropdown-button" href="#" data-activates="dropdown">Search by
-                    <i class="mdi-navigation-arrow-drop-down right"></i>
-                </a>
-            </div>
-        </div>
-        <div class="row">
-        </div>
-        <div class="row">
-            <div class="col s12 m6">
-                <div class="card grey lighten-4">
-                    <div class="card-content">
-                        <span class="card-title text-red">
-                            <div class="article-header">
-                                <h4 class="blue-text">Train your Dragon</h4>
-                                <div class="blue-text col s12">
-                                    <h6>Tag list:
-                                        <small class="chips">dragon</small>
-                                        <small class="chips">training</small>
-                                    </h6>
-                                </div>
-                                <div class="ratings">
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star_half</i>
-                                    <div class="stat">4.8</div>
-                                </div>
-                            </div>
-                            <div class="favorites">
-                                <i class="material-icons icon-orange">favorite</i>
-                        </div>
-                            <h6>
-                                <i>Wanna know how not to get devoured?</i>
-                            </h6>
-                        </span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud...</p>
-                        <hr>
-                        <small>By James Pink &nbsp;
-                            <button class="follow">Follow</button>, 01/08/2018 08:12am &nbsp;
-
-                        </small>
-                    </div>
-
-                    <div class="card-action">
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">share</i>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_up</i>
-                            <span>392</span>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_down</i>
-                            <span>59</span>
-                        </button>
-                        <a class="right blue-grey-text" href="http://www.tutorialspoint.com">
-                            Read more...</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m6">
-                <div class="card grey lighten-4">
-                    <div class="card-content">
-                        <span class="card-title">
-                            <div class="article-header">
-                                <h4 class="blue-text">The Perfect Mess</h4>
-                                <div class="blue-text col s12">
-                                    <h6>Tag list:
-                                        <small class="chips">perfect</small>
-                                        <small class="chips">mess</small>
-                                    </h6>
-                                </div>
-                                <div class="ratings">
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star_half</i>
-                                    <div class="stat">4.6</div>
-                                </div>
-                            </div>
-                            <div class="favorites">
-                                <i class="material-icons icon-orange">favorite</i>
-                        </div>
-                            <h6>
-                                <i>Your code lives on</i>
-                            </h6>
-                        </span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud...</p>
-                        <hr>
-                        <small>By Lucy Kabambe &nbsp;
-                            <button class="following">Following</button>, 01/08/2018 08:30am
-                        </small>
-                    </div>
-
-                    <div class="card-action">
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">share</i>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_up</i>
-                            <span>39</span>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_down</i>
-                            <span>5</span>
-                        </button>
-                        <a class="right blue-grey-text" href="http://www.tutorialspoint.com">
-                            Read more...</a>
-                    </div>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col s12 m6">
-                <div class="card grey lighten-4">
-                    <div class="card-content">
-                        <span class="card-title">
-                            <div class="article-header">
-                                <h4 class="blue-text">My Journey Through Coding</h4>
-                                <div class="blue-text col s12">
-                                    <h6>Tag list:
-                                        <small class="chips">journey</small>
-                                        <small class="chips">coding</small>
-                                    </h6>
-                                </div>
-                                <div class="ratings">
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star_border</i>
-                                    <i class="material-icons icon-orange">star_border</i>
-                                    <div class="stat">3.2</div>
-                                </div>
-                            </div>
-                            <div class="favorites">
-                                <i class="material-icons icon-black">favorite</i>
-                        </div>
-                            <h6>
-                                <i>Grab a cup of coffee and read on</i>
-                            </h6>
-                        </span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud...</p>
-                        <hr>
-                        <small>By Patrick Mursik &nbsp;
-                            <button class="follow">Follow</button>, 01/08/2018 09:18am
-                        </small>
-                    </div>
 
-                    <div class="card-action">
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">share</i>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_up</i>
-                            <span>77</span>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_down</i>
-                            <span>19</span>
-                        </button>
-                        <a class="right blue-grey-text" href="http://www.tutorialspoint.com">
-                            Read more...</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m6">
-                <div class="card grey lighten-4">
-                    <div class="card-content">
-                        <span class="card-title">
-                            <div class="article-header">
-                                <h4 class="blue-text">Django Rest Framework</h4>
-                                <div class="blue-text col s12">
-                                    <h6>Tag list:
-                                        <small class="chips">django-rest</small>
-                                        <small class="chips">framework</small>
-                                    </h6>
-                                </div>
-                                <div class="ratings">
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star</i>
-                                    <i class="material-icons icon-orange">star_half</i>
-                                    <i class="material-icons icon-orange">star_border</i>
-                                    <div class="stat">3.5</div>
-                                </div>
-                            </div>
-                            <div class="favorites">
-                                <i class="material-icons icon-orange">favorite</i>
-                        </div>
-                            <h6>
-                                <i>Is it the best thing to happen to Python programming?</i>
-                            </h6>
-                        </span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                            et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud...</p>
-                        <hr>
-                        <small>By Lucky Hale &nbsp;
-                            <button class="follow">Follow</button>, 01/08/2018 09:30am
-                        </small>
-                    </div>
-
-                    <div class="card-action">
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">share</i>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_up</i>
-                            <span>11</span>
-                        </button>
-                        <button class="btn waves-effect waves-light blue-grey">
-                            <i class="material-icons">thumb_down</i>
-                            <span>1</span>
-                        </button>
-                        <a class="right blue-grey-text" href="http://www.tutorialspoint.com">
-                            Read more...</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="fixed-action-btn">
-        <a class="btn-floating btn-large waves-effect waves-light green">
-            <i class="material-icons">add</i>
-        </a>
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col s12 m6 offset-m4">
-                <ul class="pagination">
-                    <li class="disabled">
-                        <a href="#!">
-                            <i class="material-icons">chevron_left</i>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="#!">1</a>
-                    </li>
-                    <li class="waves-effect">
-                        <a href="#!">2</a>
-                    </li>
-                    <li class="waves-effect">
-                        <a href="#!">3</a>
-                    </li>
-                    <li class="waves-effect">
-                        <a href="#!">4</a>
-                    </li>
-                    <li class="waves-effect">
-                        <a href="#!">5</a>
-                    </li>
-                    <li class="waves-effect">
-                        <a href="#!">
-                            <i class="material-icons">chevron_right</i>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-    <script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+        <script>
         document.addEventListener('DOMContentLoaded', function () {
             var elems = document.querySelectorAll('.dropdown-trigger');
             var instances = M.Dropdown.init(elems);
         });
     </script>
-</body>
+    </body>
 
 </html>

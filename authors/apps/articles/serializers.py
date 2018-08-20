@@ -3,9 +3,8 @@ import re
 from authors.apps.profiles.serializers import ProfileSerializer
 from notifications.models import Notification
 from rest_framework import serializers
-from .models import Article, Comment, Ratings, Tag, CommentEditHistory
+from .models import Article, Bookmarks, Comment, Ratings, Tag, CommentEditHistory
 from .tag_relations import TagRelatedField
-
 
 
 class RecursiveSerializer(serializers.Serializer):
@@ -40,10 +39,10 @@ class CommentSerializer(serializers.ModelSerializer):
         author = self.context['author']
         parent = self.context.get('parent', None)
         return Comment.objects.create(
-            author=author, article=article,parent=parent, **validated_data
+            author=author, article=article, parent=parent, **validated_data
         )
 
-    def get_comment_likes(self, obj):                 
+    def get_comment_likes(self, obj):
         return obj.comment_likes.count()
 
     def get_comment_dislikes(self, obj):
@@ -74,8 +73,9 @@ class ArticleSerializer(serializers.ModelSerializer):
     tagList = TagRelatedField(many=True, required=False, source='tags')
     favorited = serializers.SerializerMethodField(method_name="is_favorited")
     favoriteCount = serializers.SerializerMethodField(
-                            method_name='get_favorite_count'
-                            )
+        method_name='get_favorite_count'
+    )
+    bookmarked = serializers.SerializerMethodField(method_name="is_bookmarked")
 
     class Meta:
         model = Article
@@ -84,7 +84,7 @@ class ArticleSerializer(serializers.ModelSerializer):
                   'updated_at', 'author', 'average_rating',
                   'likes', 'dislikes', 'dislikes_count',
                   'likes_count', 'tagList',
-                  'favorited', 'favoriteCount']
+                  'favorited', 'favoriteCount', 'bookmarked']
 
     def get_favorite_count(self, instance):
 
@@ -136,6 +136,14 @@ class ArticleSerializer(serializers.ModelSerializer):
 
     def get_dislikes_count(self, obj):
         return obj.dislikes.count()
+
+    def is_bookmarked(self, instance):
+        request = self.context.get('request')
+        if request is None:
+            return False
+        if Bookmarks.objects.filter(article_id=instance.id, user_id=instance.author.user_id):
+            return True
+        return False
 
 
 class RatingSerializer(serializers.Serializer):
@@ -199,7 +207,7 @@ class NotificationSerializer(serializers.ModelSerializer):
         model = Notification
         fields = ['id', 'unread', 'verb',
                   'level', 'timestamp', 'data', 'emailed', 'recipient']
-        
+
 
 class UpdateCommentSerializer(serializers.Serializer):
     """
@@ -230,4 +238,3 @@ class CommentEditHistorySerializer(serializers.Serializer):
     class Meta:
         model = CommentEditHistory
         fields = ('body', 'created_at', 'updated_at')
-

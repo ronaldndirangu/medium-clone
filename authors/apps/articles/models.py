@@ -1,6 +1,7 @@
 """
 Module contains Models for article related tables
 """
+from datetime import datetime
 from django.db import models
 from django.db.models.signals import post_save, pre_save
 from django.utils.text import slugify
@@ -80,6 +81,15 @@ class Tag(TimestampModel):
 
     def __str__(self):
         return '{}'.format(self.tag)
+      
+      
+class Bookmarks(models.Model):
+    """
+    Defines the model used for storing bookmarked articles
+    """
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='bookmarked')
+    date = models.DateTimeField(default=datetime.now, blank=True)        
 
 
 def pre_save_article_receiver(sender, instance, *args, **kwargs):
@@ -120,8 +130,8 @@ def notify_followers_new_article(sender, instance, created, **kwargs):
     notify.send(instance, recipient=recipients, verb='was posted', slug=instance.slug,
                 title=instance.title, author=instance.author.user.get_full_name())
 
-
 post_save.connect(notify_followers_new_article, sender=Article)
+
 
 
 def notify_comments_favorited_articles(sender, instance, created, **kwargs):

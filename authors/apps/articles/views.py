@@ -11,12 +11,11 @@ from rest_framework.permissions import (AllowAny, IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
-from .models import Article, Comment, CommentEditHistory, Ratings, Tag
+from .models import Article, Comment, CommentEditHistory, Ratings, Tag, Bookmarks
 from .renderers import (ArticleJSONRenderer, CommentEditHistoryJSONRenderer,
                         CommentJSONRenderer, CommentLikeJSONRenderer,
                         FavoriteJSONRenderer, NotificationJSONRenderer,
-                        RatingJSONRenderer)
+                        RatingJSONRenderer, BookmarkJSONRenderer)
 from .serializers import (ArticleSerializer, CommentEditHistorySerializer,
                           CommentSerializer, NotificationSerializer,
                           RatingSerializer, TagSerializer,
@@ -601,3 +600,54 @@ class DislikeCommentLikesAPIView(APIView):
         )
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class BookmarkAPIView(APIView):
+    lookup_field = 'slug'
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    renderer_classes = (BookmarkJSONRenderer,)
+    serializer_class = ArticleSerializer
+
+    def post(self, request, slug):
+        """
+        Method that add article to bookmarked ones
+        """
+        serializer_context = {'request': request}
+        try:
+            article = Article.objects.get(slug=slug)
+        except Article.DoesNotExist:
+            raise NotFound("An article with this slug does not exist")
+        bookmark = Bookmarks.objects.filter(
+            user=request.user.profile, article=article).first()
+        if not bookmark:
+            bookmarks = Bookmarks(article=article, user=request.user.profile)
+            bookmarks.save()
+            serializer = self.serializer_class(
+                article,
+                context=serializer_context
+            )
+            return Response(serializer.data,  status=status.HTTP_201_CREATED)
+        return Response({
+            "msg": "Article with the slug '{}' is already in bookmarks".format(slug)
+        }, status=status.HTTP_202_ACCEPTED)
+
+    def delete(self, request, slug):
+        """
+        Method that removes article from the bookmarked ones
+        """
+        serializer_context = {'request': request}
+        try:
+            article = Article.objects.get(slug=slug).id
+        except Article.DoesNotExist:
+            raise NotFound("An article with this slug does not exist")
+
+        try:
+            bookmarked_article = Bookmarks.objects.get(article=article)
+        except Bookmarks.DoesNotExist:
+            raise NotFound("This article has not been bookmarked")
+
+        bookmarked_article.delete()
+
+        return Response({
+            "msg": "Article with the slug '{}' has been removed from bookmarks".format(slug)
+        }, status=status.HTTP_200_OK)

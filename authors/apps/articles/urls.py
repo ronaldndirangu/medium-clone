@@ -1,12 +1,11 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-
 from .views import (ArticleViewSet, CommentEditHistoryAPIView,
                     CommentsDestroyGetCreateAPIView, CommentsListCreateAPIView,
                     DislikeCommentLikesAPIView, DislikesAPIView,
                     FavoriteAPIView, FilterAPIView, LikeCommentLikesAPIView,
                     LikesAPIView, NotificationViewset, RateAPIView,
-                    ReadAllNotificationViewset, TagListAPIView)
+                    ReadAllNotificationViewset, TagListAPIView, BookmarkAPIView)
 
 app_name = "articles"
 
@@ -38,4 +37,5 @@ urlpatterns = [
          DislikeCommentLikesAPIView.as_view()),
     path('articles/<slug>/comments/<comment_pk>/history/',
          CommentEditHistoryAPIView.as_view(), name="comment_history"),
+    path('articles/<slug>/bookmark/', BookmarkAPIView.as_view()),
 ]
