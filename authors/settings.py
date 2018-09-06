@@ -140,6 +140,7 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = (
     '0.0.0.0:4000',
+    'herokuapp.com:https://ah-titans-frontend.herokuapp.com/',
     'localhost:4000',
 )
 
