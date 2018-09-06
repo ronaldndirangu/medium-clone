@@ -28,7 +28,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['0.0.0.0', 'localhost', 'herokuapp.com']
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost',
+                 'herokuapp.com', 'https://ah-titans-frontend.herokuapp.com/']
 
 # Application definition
 
@@ -138,9 +139,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ORIGIN_WHITELIST = (
     '0.0.0.0:4000',
-    'herokuapp.com:https://ah-titans-frontend.herokuapp.com/',
+    'https://ah-titans-frontend.herokuapp.com/',
     'localhost:4000',
 )
 
