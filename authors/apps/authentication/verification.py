@@ -57,35 +57,9 @@ class SendEmail():
 
         # render template mail.txt
         body = render_to_string('reset-password-mail.html', context={
-            'action_url': "http://",
+            'action_url': "https://",
             'user': user,
-            'domain': current_site.domain,
-            'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode('utf-8'),
-            'token': token
-        })
-
-        # set mail to email content with subject, body ,sender and recepient
-        # with html content type
-        mail = EmailMessage(subject, body, "janetnim401@gmail.com", to=[email])
-        mail.content_subtype = 'html'
-
-        # send email
-        mail.send()
-
-        return (token, urlsafe_base64_encode(force_bytes(user.pk)).decode('utf-8'))
-
-    def send_reset_pass_email(self, email, request):
-        user = User.objects.filter(email=email).first()
-        subject = "Forgot your Authors Haven password"
-
-        token = account_activation_token.make_token(user)
-        current_site = get_current_site(request)
-
-        # render template mail.txt
-        body = render_to_string('reset-password-mail.html', context={
-            'action_url': "http://",
-            'user': user,
-            'domain': current_site.domain,
+            'domain': 'ah-titans-frontend.herokuapp.com',
             'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode('utf-8'),
             'token': token
         })
