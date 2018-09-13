@@ -226,6 +226,7 @@ class ExchangeToken(CreateAPIView):
     permission_classes = (AllowAny,)
     renderer_classes = (UserJSONRenderer,)
     serializer_class = SocialSerializer
+    serializer_class2 = UserSerializer
 
     def create(self, request, backend):
         serializer = SocialSerializer(data=request.data)
@@ -256,14 +257,16 @@ class ExchangeToken(CreateAPIView):
             )
         if user:
             if user.is_active:
+                serializer = UserSerializer(user)
                 dt = datetime.now() + timedelta(days=30)
                 token = jwt.encode({
-                    'id': user.pk,
+                    'username': user.username,
                     'exp': int(dt.strftime('%s'))
                 }, settings.SECRET_KEY, algorithm='HS256')
 
                 token = token.decode('utf-8')
-                return Response({'token': token})
+                serializer.instance = user
+                return Response({'token': token, 'user': serializer.data})
             else:
 
                 return Response(
