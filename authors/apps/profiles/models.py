@@ -1,6 +1,6 @@
 
-from django.db import models
 from django.conf import settings
+from django.db import models
 
 # User = settings.AUTH_USER_MODEL
 
@@ -8,22 +8,23 @@ from django.conf import settings
 class Profile(models.Model):
     """This class represents the user profile model."""
 
-    #resticting user to have one and only one profile
+    # resticting user to have one and only one profile
     user = models.OneToOneField(
         'authentication.User', on_delete=models.CASCADE
     )
     bio = models.TextField(blank=True)
-    image = models.URLField(blank=True)
+    image = models.TextField(blank=True)
     interests = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    favorites = models.ManyToManyField('articles.Article', symmetrical=False, related_name='users_fav_articles')
+    favorites = models.ManyToManyField(
+        'articles.Article', symmetrical=False, related_name='users_fav_articles')
     follows = models.ManyToManyField(
         'self',
         related_name='follower',
         symmetrical=False
     )
-    
+
     def __str__(self):
         return '{}'.format(self.user.email)
 

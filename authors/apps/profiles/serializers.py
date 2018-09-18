@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-#my local imports
+# my local imports
 from .models import Profile
 
 
@@ -9,7 +9,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     username = serializers.CharField(source='user.username')
     bio = serializers.CharField(allow_blank=True, required=False)
-    image = serializers.SerializerMethodField()
+    image = serializers.CharField(allow_blank=True, required=False)
     interests = serializers.CharField(allow_blank=True, required=False)
     following = serializers.SerializerMethodField()
 
@@ -17,12 +17,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ('username', 'bio', 'image', 'interests', 'following')
         read_only_fields = ('username',)
-
-    def get_image(self, obj):
-        if obj.image:
-            return obj.image
-        else:
-            return 'https://static.productionready.io/images/smiley-cyrus.jpg'
 
     def get_following(self, instance):
         request = self.context.get('request', None)

@@ -1,26 +1,27 @@
-import jwt
 from datetime import datetime, timedelta
-from requests.exceptions import HTTPError
 
-from rest_framework import status, mixins, viewsets
-from rest_framework.generics import RetrieveUpdateAPIView, CreateAPIView
+import jwt
+from django.conf import settings
+from django.http.response import HttpResponse
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from requests.exceptions import HTTPError
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import api_view, list_route, permission_classes
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.decorators import api_view, permission_classes, list_route
-from .models import User
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.http.response import HttpResponse
-from django.conf import settings
-
-from social_django.utils import load_backend, load_strategy
 from social_core.exceptions import MissingBackend
+from social_django.utils import load_backend, load_strategy
+
+from .models import User
 from .renderers import UserJSONRenderer
+from .serializers import (LoginSerializer, NotificationToggleSerializer,
+                          PassResetSerializer, RegistrationSerializer,
+                          ResetPassSerializer, SocialSerializer,
+                          UserSerializer)
 from .verification import SendEmail, account_activation_token
-from .serializers import (
-    LoginSerializer, RegistrationSerializer, UserSerializer, SocialSerializer, ResetPassSerializer, PassResetSerializer, NotificationToggleSerializer
-)
 
 
 class RegistrationAPIView(APIView):
@@ -208,7 +209,6 @@ class UserRetrieveUpdateAPIView(RetrieveUpdateAPIView):
                     'image': user_data.get('image', request.user.profile.image)
                 }
             }
-
             # Here is that serialize, validate, save pattern we talked about
             # before.
             serializer = self.serializer_class(

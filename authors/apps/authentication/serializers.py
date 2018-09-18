@@ -1,24 +1,16 @@
+import re
+
 from django.contrib.auth import authenticate
-
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 from rest_framework import serializers
-
 from rest_framework.serializers import Serializer
 from rest_framework.validators import UniqueValidator
-from django.utils.encoding import force_text
-from django.utils.http import urlsafe_base64_decode
 
-from rest_framework.validators import UniqueValidator
-
-
-from rest_framework.serializers import Serializer
-from rest_framework.validators import UniqueValidator
-from django.utils.encoding import force_text
-from django.utils.http import urlsafe_base64_decode
-from .models import User
-from .backends import JWTAuthentication
 from authors.apps.profiles.serializers import ProfileSerializer
 
-import re
+from .backends import JWTAuthentication
+from .models import User
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
