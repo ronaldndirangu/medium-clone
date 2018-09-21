@@ -266,7 +266,7 @@ class ExchangeToken(CreateAPIView):
                     'is_verified': user.is_verified,
                     'exp': int(dt.strftime('%s'))
                 }, settings.SECRET_KEY, algorithm='HS256')
-
+                token = token.decode('utf-8')
                 serializer.instance = user
                 user.save()
                 return Response({'token': token, 'user': serializer.data})
