@@ -257,15 +257,18 @@ class ExchangeToken(CreateAPIView):
             )
         if user:
             if user.is_active:
-                serializer = UserSerializer(user)
+                user.is_verified = True
                 dt = datetime.now() + timedelta(days=30)
                 token = jwt.encode({
                     'username': user.username,
+                    'id': user.pk,
+                    'email': user.email,
+                    'is_verified': user.is_verified,
                     'exp': int(dt.strftime('%s'))
                 }, settings.SECRET_KEY, algorithm='HS256')
 
-                token = token.decode('utf-8')
                 serializer.instance = user
+                user.save()
                 return Response({'token': token, 'user': serializer.data})
             else:
 
